@@ -1,14 +1,14 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    hide ChangeNotifierProvider, Consumer, Provider;
-import 'package:fractal2d/simple_diagram_editor/widget/options.dart';
-import '../providers/app.dart';
-import '../providers/positioner.dart';
-import '/abstraction_layer/policy/base/policy_set.dart';
-import '/abstraction_layer/policy/defaults/canvas_control_policy.dart';
-import '/canvas_context/canvas_model.dart';
-import '/canvas_context/canvas_state.dart';
-import '../models/component.dart';
-import '/models/link_data.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider, Consumer, Provider;
+import 'package:fractal2d/extensions/color.dart';
+import 'package:fractal2d/policy/defaults/canvas_move.dart';
+import 'package:fractal2d/widgets/options.dart';
+import 'package:fractals2d/models/canvas.dart';
+import 'package:fractals2d/models/component.dart';
+import 'package:fractals2d/models/link_data.dart';
+import 'package:fractals2d/models/state.dart';
+import '../apps/diagram.dart';
+import '../policy/base/policy_set.dart';
+import '../policy/defaults/canvas_control_policy.dart';
 import 'component.dart';
 import 'link.dart';
 import 'package:flutter/gestures.dart';
@@ -16,17 +16,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fractal_flutter/fractal_flutter.dart';
 
-class DiagramEditorCanvas extends ConsumerStatefulWidget {
+class DiagramEditorCanvas extends StatefulWidget {
   /// The canvas where all components and links are shown on.
   const DiagramEditorCanvas({
-    Key? key,
+    super.key,
   });
 
   @override
   _DiagramEditorCanvasState createState() => _DiagramEditorCanvasState();
 }
 
-class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
+class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     with TickerProviderStateMixin {
   PolicySet? withControlPolicy;
 
@@ -58,31 +58,36 @@ class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
 
     return [
       ...zOrderedComponents.map(
-        (componentData) => FChangeNotifierProvider<ComponentData>.value(
+        (componentData) => FChangeNotifierProvider<ComponentFractal>.value(
+          key: Key('FCNP_${componentData.path}'),
           value: componentData,
-          child: Component(),
+          child: Component(
+            key: Key(
+              componentData.path,
+            ),
+          ),
         ),
       ),
     ];
   }
 
   List<Widget> showLinks(CanvasModel canvasModel) {
-    return canvasModel.links.values.map((LinkData linkData) {
-      return ChangeNotifierProvider<LinkData>.value(
+    return canvasModel.links.values.map((LinkFractal linkData) {
+      return FChangeNotifierProvider<LinkFractal>.value(
         value: linkData,
         child: Link(),
       );
     }).toList();
   }
 
-  List<Widget> showOtherWithComponentDataUnder(CanvasModel canvasModel) {
-    return canvasModel.components.values.map((ComponentData componentData) {
-      return FChangeNotifierProvider<ComponentData>.value(
+  List<Widget> showOtherWithComponentFractalUnder(CanvasModel canvasModel) {
+    return canvasModel.components.values.map((ComponentFractal componentData) {
+      return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
-          return Consumer<ComponentData>(
+          return Consumer<ComponentFractal>(
             builder: (context, data, child) {
-              return policy.showCustomWidgetWithComponentDataUnder(
+              return policy.showCustomWidgetWithComponentFractalUnder(
                   context, data);
             },
           );
@@ -91,14 +96,14 @@ class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
     }).toList();
   }
 
-  List<Widget> showOtherWithComponentDataOver(CanvasModel canvasModel) {
-    return canvasModel.components.values.map((ComponentData componentData) {
-      return FChangeNotifierProvider<ComponentData>.value(
+  List<Widget> showOtherWithComponentFractalOver(CanvasModel canvasModel) {
+    return canvasModel.components.values.map((ComponentFractal componentData) {
+      return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
-          return Consumer<ComponentData>(
+          return Consumer<ComponentFractal>(
             builder: (context, data, child) {
-              return policy.showCustomWidgetWithComponentDataOver(
+              return policy.showCustomWidgetWithComponentFractalOver(
                   context, data);
             },
           );
@@ -116,19 +121,17 @@ class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
   }
 
   Widget canvasStack(CanvasModel canvasModel) {
-    final position = ref.watch(Positioner.provider);
-
     return Stack(
       clipBehavior: Clip.none,
       fit: StackFit.expand,
       children: [
         ...showBackgroundWidgets(),
-        ...showOtherWithComponentDataUnder(canvasModel),
+        ...showOtherWithComponentFractalUnder(canvasModel),
         ...showComponents(canvasModel),
         ...showLinks(canvasModel),
-        ...showOtherWithComponentDataOver(canvasModel),
+        ...showOtherWithComponentFractalOver(canvasModel),
         ...showForegroundWidgets(),
-        if (position.x != 0 || position.y != 0) const OptionsArea()
+        //if (app.position.x != 0 || app.position.y != 0) OptionsArea()
       ],
     );
   }
@@ -152,17 +155,21 @@ class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
     );
   }
 
+  static GlobalKey canvasGlobalKey = GlobalKey();
+
+  late DiagramAppFractal app;
+
   late PolicySet policy;
   @override
   Widget build(BuildContext context) {
-    final ctx = ref.read(editorContextProvider);
-    policy = ctx.policySet;
+    app = context.read<DiagramAppFractal>();
+    policy = app.policy;
     init();
     final canvasModel = Provider.of<CanvasModel>(context);
     final canvasState = Provider.of<CanvasState>(context);
 
     return RepaintBoundary(
-      key: canvasState.canvasGlobalKey,
+      key: canvasGlobalKey,
       child: AbsorbPointer(
         absorbing: canvasState.shouldAbsorbPointer,
         child: Listener(
@@ -170,7 +177,7 @@ class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
               policy.onCanvasPointerSignal(event),
           child: GestureDetector(
             child: Container(
-              color: canvasState.color,
+              color: canvasState.color.toMaterial,
               child: ClipRect(
                 child: (withControlPolicy != null)
                     ? canvasAnimated(canvasModel)
@@ -181,17 +188,15 @@ class _DiagramEditorCanvasState extends ConsumerState<DiagramEditorCanvas>
             onScaleUpdate: (details) => policy.onCanvasScaleUpdate(details),
             onScaleEnd: (details) => policy.onCanvasScaleEnd(details),
             onTap: () => policy.onCanvasTap(),
-            onTapDown: (TapDownDetails details) =>
-                policy.onCanvasTapDown(details),
-            onTapUp: (TapUpDetails details) => policy.onCanvasTapUp(details),
+            onTapDown: (details) => policy.onCanvasTapDown(details),
+            onTapUp: (details) => policy.onCanvasTapUp(details),
             onTapCancel: () => policy.onCanvasTapCancel(),
             onLongPress: () => policy.onCanvasLongPress(),
-            onLongPressStart: (LongPressStartDetails details) =>
+            onLongPressStart: (details) =>
                 policy.onCanvasLongPressStart(details),
-            onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) =>
+            onLongPressMoveUpdate: (details) =>
                 policy.onCanvasLongPressMoveUpdate(details),
-            onLongPressEnd: (LongPressEndDetails details) =>
-                policy.onCanvasLongPressEnd(details),
+            onLongPressEnd: (details) => policy.onCanvasLongPressEnd(details),
             onLongPressUp: () => policy.onCanvasLongPressUp(),
           ),
         ),

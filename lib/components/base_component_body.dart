@@ -1,33 +1,29 @@
-import '/diagram_editor.dart';
-import '/simple_diagram_editor/data/custom_component_data.dart';
+import 'package:fractal2d/builders/text.dart';
+import 'package:fractals2d/models/component.dart';
 import 'package:flutter/material.dart';
 
 class BaseComponentBody extends StatelessWidget {
-  final ComponentData componentData;
+  final ComponentFractal component;
   final CustomPainter componentPainter;
 
   const BaseComponentBody({
     super.key,
-    required this.componentData,
+    required this.component,
     required this.componentPainter,
   });
 
   @override
   Widget build(BuildContext context) {
-    final MyComponentData customData = componentData.data;
+    //final Mycomponent customData = component.data;
 
     return GestureDetector(
       child: CustomPaint(
         painter: componentPainter,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4),
-          child: Align(
-            alignment: customData.textAlignment,
-            child: Text(
-              customData.text,
-              style: TextStyle(fontSize: customData.textSize),
-            ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
           ),
+          child: component.build(context),
         ),
       ),
     );

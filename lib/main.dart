@@ -1,16 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fractal2d/apps/fractal.dart';
 import 'package:flutter/material.dart';
-import 'providers/app.dart';
-import 'services/logger.dart';
-import 'simple_diagram_editor/widget/editor.dart';
+import 'package:fractal2d/diagram_editor.dart';
+import 'package:fractal_flutter/fractal_flutter.dart';
 
-void main() {
-  AppFractal.provider = editorContextProvider;
+void main() async {
+  await FractalFlutter.init();
+  await DiagramAppFractal.prepare();
+
   runApp(
-    ProviderScope(
-      observers: [Logger()],
-      child: SimpleDemoEditor(),
-    ),
+    const FractalDiagram(),
   );
 }

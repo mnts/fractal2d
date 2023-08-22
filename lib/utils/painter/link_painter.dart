@@ -1,9 +1,14 @@
-import '/utils/link_style.dart';
+import 'package:fractal2d/extensions/color.dart';
+import 'package:fractal2d/extensions/link_style.dart';
+import 'package:fractal2d/extensions/position.dart';
+import 'package:fractals2d/models/link_style.dart';
+import 'package:position_fractal/fractals/offset.dart';
+
 import '/utils/vector_utils.dart';
 import 'package:flutter/material.dart';
 
 class LinkPainter extends CustomPainter {
-  final List<Offset> linkPoints;
+  final List<OffsetF> linkPoints;
   final double scale;
   final LinkStyle linkStyle;
 
@@ -16,7 +21,7 @@ class LinkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
-      ..color = linkStyle.color
+      ..color = linkStyle.color.toMaterial
       ..strokeWidth = linkStyle.lineWidth * scale
       ..style = PaintingStyle.stroke;
 
@@ -25,13 +30,13 @@ class LinkPainter extends CustomPainter {
         canvas.drawPath(
           linkStyle.getLinePath(
             VectorUtils.getShorterLineStart(
-              linkPoints[i],
-              linkPoints[i + 1],
+              linkPoints[i].offset,
+              linkPoints[i + 1].offset,
               scale * linkStyle.getEndShortening(linkStyle.backArrowType),
             ),
             VectorUtils.getShorterLineEnd(
-              linkPoints[i],
-              linkPoints[i + 1],
+              linkPoints[i].offset,
+              linkPoints[i + 1].offset,
               scale * linkStyle.getEndShortening(linkStyle.arrowType),
             ),
             scale,
@@ -42,11 +47,11 @@ class LinkPainter extends CustomPainter {
         canvas.drawPath(
           linkStyle.getLinePath(
             VectorUtils.getShorterLineStart(
-              linkPoints[i],
-              linkPoints[i + 1],
+              linkPoints[i].offset,
+              linkPoints[i + 1].offset,
               scale * linkStyle.getEndShortening(linkStyle.backArrowType),
             ),
-            linkPoints[i + 1],
+            linkPoints[i + 1].offset,
             scale,
           ),
           paint,
@@ -54,10 +59,10 @@ class LinkPainter extends CustomPainter {
       } else if (i == linkPoints.length - 2) {
         canvas.drawPath(
           linkStyle.getLinePath(
-            linkPoints[i],
+            linkPoints[i].offset,
             VectorUtils.getShorterLineEnd(
-              linkPoints[i],
-              linkPoints[i + 1],
+              linkPoints[i].offset,
+              linkPoints[i + 1].offset,
               scale * linkStyle.getEndShortening(linkStyle.arrowType),
             ),
             scale,
@@ -66,7 +71,11 @@ class LinkPainter extends CustomPainter {
         );
       } else {
         canvas.drawPath(
-            linkStyle.getLinePath(linkPoints[i], linkPoints[i + 1], scale),
+            linkStyle.getLinePath(
+              linkPoints[i].offset,
+              linkPoints[i + 1].offset,
+              scale,
+            ),
             paint);
       }
     }
@@ -121,7 +130,12 @@ class LinkPainter extends CustomPainter {
       // if (i == linkPoints.length - 2)
       //   point2 = PainterUtils.getShorterLineEnd(point1, point2, scale * 10);
 
-      path.addPath(VectorUtils.getRectAroundLine(point1, point2, hitAreaWidth),
+      path.addPath(
+          VectorUtils.getRectAroundLine(
+            point1.offset,
+            point2.offset,
+            hitAreaWidth,
+          ),
           Offset(0, 0));
     }
     return path;

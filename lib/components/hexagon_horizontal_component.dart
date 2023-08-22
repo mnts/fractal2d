@@ -1,23 +1,24 @@
-import '/diagram_editor.dart';
+import 'package:fractal2d/extensions/color.dart';
+import 'package:fractals2d/models/component.dart';
 import '/components/base_component_body.dart';
 import 'package:flutter/material.dart';
 
 class HexagonHorizontalBody extends StatelessWidget {
-  final ComponentData componentData;
+  final ComponentFractal component;
 
   const HexagonHorizontalBody({
     super.key,
-    required this.componentData,
+    required this.component,
   });
 
   @override
   Widget build(BuildContext context) {
     return BaseComponentBody(
-      componentData: componentData,
+      component: component,
       componentPainter: HexagonHorizontalPainter(
-        color: componentData.data.color,
-        borderColor: componentData.data.borderColor,
-        borderWidth: componentData.data.borderWidth,
+        color: component.color.toMaterial,
+        borderColor: component.borderColor.toMaterial,
+        borderWidth: component.borderWidth,
       ),
     );
   }

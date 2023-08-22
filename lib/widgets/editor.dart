@@ -1,31 +1,28 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart'
-    hide ChangeNotifierProvider;
 import 'package:fractal_flutter/fractal_flutter.dart';
-
-import '../providers/app.dart';
-import '/canvas_context/canvas_model.dart';
-import '/canvas_context/canvas_state.dart';
+import 'package:fractal_flutter/provider.dart';
+import 'package:fractals2d/models/canvas.dart';
+import 'package:fractals2d/models/state.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import '../apps/diagram.dart';
 import 'canvas.dart';
 
-class DiagramEditor extends ConsumerWidget {
+class DiagramEditor extends StatelessWidget {
   @override
-  Widget build(context, ref) {
-    final ctx = ref.watch(editorContextProvider);
+  Widget build(context) {
+    final app = context.read<DiagramAppFractal>();
     return FMultiProvider(
       providers: [
         FChangeNotifierProvider<CanvasModel>.value(
-          value: ctx.canvasModel,
+          value: app.policy.model,
         ),
         FChangeNotifierProvider<CanvasState>.value(
-          value: ctx.canvasState,
+          value: app.policy.state,
+        ),
+        FChangeNotifierProvider.value(
+          value: app,
         ),
       ],
-      builder: (context, child) {
-        return const DiagramEditorCanvas();
-      },
+      builder: (context, child) => const DiagramEditorCanvas(),
     );
   }
 }

@@ -1,23 +1,24 @@
-import '/diagram_editor.dart';
+import 'package:fractal2d/extensions/color.dart';
+import 'package:fractals2d/models/component.dart';
 import '/components/base_component_body.dart';
 import 'package:flutter/material.dart';
 
 class RoundRectBody extends StatelessWidget {
-  final ComponentData componentData;
+  final ComponentFractal component;
 
   const RoundRectBody({
     super.key,
-    @required required this.componentData,
+    @required required this.component,
   });
 
   @override
   Widget build(BuildContext context) {
     return BaseComponentBody(
-      componentData: componentData,
+      component: component,
       componentPainter: RoundRectPainter(
-        color: componentData.data.color,
-        borderColor: componentData.data.borderColor,
-        borderWidth: componentData.data.borderWidth,
+        color: component.color.toMaterial,
+        borderColor: component.borderColor.toMaterial,
+        borderWidth: component.borderWidth,
       ),
     );
   }

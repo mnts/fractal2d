@@ -1,40 +1,38 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
-
-import '../providers/app.dart';
-import '/abstraction_layer/policy/base/policy_set.dart';
-import '/canvas_context/canvas_state.dart';
-import '/models/link_data.dart';
+import 'package:fractal2d/extensions/color.dart';
+import 'package:fractals2d/models/link_data.dart';
+import '../apps/diagram.dart';
 import '/utils/painter/link_joint_painter.dart';
 import '/utils/painter/link_painter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Link extends ConsumerWidget {
+class Link extends StatelessWidget {
   const Link({
     Key? key,
   });
 
   @override
-  Widget build(context, ref) {
-    final ctx = ref.read(editorContextProvider);
+  Widget build(context) {
+    final app = context.read<DiagramAppFractal>(), policy = app.policy;
 
-    final linkData = Provider.of<LinkData>(context);
-    final canvasState = ctx.canvasState;
+    final linkData = Provider.of<LinkFractal>(context);
+    final canvasState = app.policy.state;
 
     LinkPainter linkPainter = LinkPainter(
-      linkPoints: (linkData.linkPoints
-              .map((point) => point * canvasState.scale + canvasState.position))
-          .toList(),
+      linkPoints: (linkData.linkPoints.map(
+        (point) => point * canvasState.scale + canvasState.position.value,
+      )).toList(),
       scale: canvasState.scale,
       linkStyle: linkData.linkStyle,
     );
 
-    final policy = ctx.policySet;
-
     return Listener(
       onPointerSignal: (PointerSignalEvent event) =>
-          policy.onLinkPointerSignal(linkData.id, event),
+          app.policy.onLinkPointerSignal(
+        linkData.id,
+        event,
+      ),
       child: GestureDetector(
         child: CustomPaint(
           painter: linkPainter,
@@ -80,7 +78,7 @@ class Link extends ConsumerWidget {
                           location: canvasState.toCanvasCoordinates(jointPoint),
                           radius: 8,
                           scale: canvasState.scale,
-                          color: linkData.linkStyle.color.withOpacity(0.5),
+                          color: linkData.linkStyle.color.toMaterial,
                         ),
                       ),
                     ),

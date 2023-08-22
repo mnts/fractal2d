@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fractal2d/lib.dart';
+import 'package:position_fractal/fractals/offset.dart';
 
 class LinkJointPainter extends CustomPainter {
-  final Offset location;
+  final OffsetF location;
   final double radius;
   final double scale;
   final Color color;
@@ -19,7 +21,7 @@ class LinkJointPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(location, scale * radius, paint);
+    canvas.drawCircle(location.offset, scale * radius, paint);
   }
 
   @override
@@ -27,9 +29,9 @@ class LinkJointPainter extends CustomPainter {
 
   @override
   bool hitTest(Offset position) {
-    Path path = new Path();
+    Path path = Path();
     path.addOval(Rect.fromCircle(
-      center: this.location,
+      center: location.offset,
       radius: scale * radius,
     ));
 

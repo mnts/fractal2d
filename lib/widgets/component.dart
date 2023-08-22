@@ -1,29 +1,26 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
-import 'package:fractal2d/providers/app.dart';
+import 'package:fractals2d/models/component.dart';
 import 'package:provider/provider.dart';
-
-import '/abstraction_layer/policy/base/policy_set.dart';
-import '/canvas_context/canvas_state.dart';
-import '../models/component.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class Component extends ConsumerWidget {
+import '../apps/diagram.dart';
+
+class Component extends StatelessWidget {
   const Component({super.key});
 
   @override
-  Widget build(BuildContext context, ref) {
-    final ctx = ref.read(editorContextProvider);
+  Widget build(context) {
+    final app = context.watch<DiagramAppFractal>();
 
-    final componentData = Provider.of<ComponentData>(context);
-    final canvasState = ctx.canvasState;
+    final componentData = Provider.of<ComponentFractal>(context);
+    final canvasState = app.policy.state;
 
-    final policy = ctx.policySet;
+    final policy = app.policy;
 
     return Positioned(
-      left: canvasState.scale * componentData.position.dx +
-          canvasState.position.dx,
-      top: canvasState.scale * componentData.position.dy +
+      left: canvasState.scale * componentData.position.value.dx +
+          canvasState.position.value.dx,
+      top: canvasState.scale * componentData.position.value.dy +
           canvasState.position.dy,
       width: canvasState.scale * componentData.size.width,
       height: canvasState.scale * componentData.size.height,
@@ -43,30 +40,33 @@ class Component extends ConsumerWidget {
                 height: componentData.size.height,
                 child: Container(
                   transform: Matrix4.identity()..scale(canvasState.scale),
-                  child: ctx.policySet.showComponentBody(componentData),
+                  child: policy.showComponentBody(componentData),
                 ),
               ),
-              policy.showCustomWidgetWithComponentData(context, componentData),
+              policy.showCustomWidgetWithComponentFractal(
+                context,
+                componentData,
+              ),
             ],
           ),
           onTap: () => policy.onComponentTap(componentData.id),
-          onTapDown: (TapDownDetails details) =>
+          onTapDown: (details) =>
               policy.onComponentTapDown(componentData.id, details),
-          onTapUp: (TapUpDetails details) =>
+          onTapUp: (details) =>
               policy.onComponentTapUp(componentData.id, details),
           onTapCancel: () => policy.onComponentTapCancel(componentData.id),
-          onScaleStart: (ScaleStartDetails details) =>
+          onScaleStart: (details) =>
               policy.onComponentScaleStart(componentData.id, details),
-          onScaleUpdate: (ScaleUpdateDetails details) =>
-              policy.onComponentScaleUpdate(componentData.id, details),
-          onScaleEnd: (ScaleEndDetails details) =>
+          onScaleUpdate: (details) =>
+              policy.onComponentScaleUpdate(componentData, details),
+          onScaleEnd: (details) =>
               policy.onComponentScaleEnd(componentData.id, details),
           onLongPress: () => policy.onComponentLongPress(componentData.id),
-          onLongPressStart: (LongPressStartDetails details) =>
+          onLongPressStart: (details) =>
               policy.onComponentLongPressStart(componentData.id, details),
-          onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) =>
+          onLongPressMoveUpdate: (details) =>
               policy.onComponentLongPressMoveUpdate(componentData.id, details),
-          onLongPressEnd: (LongPressEndDetails details) =>
+          onLongPressEnd: (details) =>
               policy.onComponentLongPressEnd(componentData.id, details),
           onLongPressUp: () => policy.onComponentLongPressUp(componentData.id),
         ),

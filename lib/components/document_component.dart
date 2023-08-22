@@ -1,26 +1,25 @@
-import '/diagram_editor.dart';
+import 'package:fractal2d/extensions/color.dart';
+import 'package:fractals2d/models/component.dart';
 import '/components/base_component_body.dart';
 import 'package:flutter/material.dart';
 
 class DocumentBody extends StatelessWidget {
-  final ComponentData componentData;
+  final ComponentFractal component;
 
   const DocumentBody({
     super.key,
-    required this.componentData,
+    required this.component,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return BaseComponentBody(
-      componentData: componentData,
-      componentPainter: DocumentPainter(
-        color: componentData.data.color,
-        borderColor: componentData.data.borderColor,
-        borderWidth: componentData.data.borderWidth,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => BaseComponentBody(
+        component: component,
+        componentPainter: DocumentPainter(
+          color: component.color.toMaterial,
+          borderColor: component.borderColor.toMaterial,
+          borderWidth: component.borderWidth,
+        ),
+      );
 }
 
 class DocumentPainter extends CustomPainter {
