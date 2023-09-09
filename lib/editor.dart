@@ -1,11 +1,20 @@
 import 'dart:ui';
+import 'package:fractal/types/file.dart';
+import 'package:fractals2d/models/canvas.dart';
+import 'package:fractals2d/models/policy.dart';
+import 'package:fractals2d/models/state.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:color/color.dart';
 import 'package:fractal2d/apps/diagram.dart';
 import 'package:fractal_flutter/fractal_flutter.dart';
+import 'package:fractal_layout/layout.dart';
 import 'package:provider/provider.dart';
-import 'widgets/editor.dart';
-import 'policy/main/my_policy_set.dart';
+import 'policy/base/index.dart';
+import 'policy/main/set.dart';
+import 'widgets/canvas.dart';
 import 'widgets/menu.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Color;
 import 'package:fractal_flutter/fractal_flutter.dart';
 
 class FractalDiagram extends StatefulWidget {
@@ -24,54 +33,94 @@ class _FractalDiagramState extends State<FractalDiagram> {
   //bool isMenuVisible = true;
   //bool isOptionsVisible = true;
 
-  late DiagramAppFractal app;
+  final app = DiagramAppFractal(
+    domain: 'fractal2d',
+    color: const Color.rgb(100, 80, 200),
+    title: FileF.host,
+    name: FileF.host,
+  )..complete();
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final policy = MyPolicySet();
+  late final policy = MyPolicySet(app);
 
   @override
   void initState() {
     //policy.refer(ref);
-    app = DiagramAppFractal(
-      policy: policy,
-    );
     super.initState();
   }
 
   @override
   Widget build(context) {
-    return MaterialApp(
-      // showPerformanceOverlay: !kIsWeb,
-      showPerformanceOverlay: false,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        canvasColor: Colors.white.withOpacity(0.7),
-      ),
-      home: Scaffold(
-        key: _scaffoldKey,
-        drawer: buildDrawer(policy),
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          title: const Text('Fractal 2D'),
-          flexibleSpace: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-              child: Container(
-                color: Colors.blue.withAlpha(130),
+    return FractalLayout<DiagramAppFractal>(
+      app,
+      actions: [
+        /*
+        Tooltip(
+          message:
+              """
+Invest particular amount to 
+further develop this system 
+and you will be contacted
+to discuss cooperation""",
+          child: InkWell(
+            onTap: () {
+              launchUrl(
+                Uri.parse('https://paypal.me/mntas/88'),
+              );
+            },
+            child: const Text(
+              'Invest',
+              style: TextStyle(
+                fontSize: 26,
               ),
             ),
           ),
-          shadowColor: const Color.fromARGB(128, 128, 128, 128),
-          backgroundColor: Colors.transparent,
-          actions: _actions(policy),
         ),
-        body: Watch(
-          app,
-          (ctx, child) => DiagramEditor(),
+        */
+      ],
+      child: FMultiProvider(
+        providers: [
+          FChangeNotifierProvider<CanvasMix>.value(
+            value: policy.model,
+          ),
+          FChangeNotifierProvider<PolicySet>.value(
+            value: policy,
+          ),
+          FChangeNotifierProvider<CanvasState>.value(
+            value: policy.state,
+          ),
+          FChangeNotifierProvider.value(
+            value: app,
+          ),
+        ],
+        builder: (context, child) => const DiagramEditorCanvas(),
+      ),
+    );
+    /*
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: buildDrawer(policy),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text('Fractal 2D'),
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+            child: Container(
+              color: Colors.blue.withAlpha(130),
+            ),
+          ),
         ),
-        /*
+        //shadowColor: Color.fromRGB(128, 128, 128, 128),
+        backgroundColor: Colors.transparent,
+        actions: _actions(policy),
+      ),
+      body: Watch(
+        app,
+        (ctx, child) => DiagramEditor(),
+      ),
+      /*
             Positioned(
               right: 16,
               top: 16,
@@ -99,8 +148,8 @@ class _FractalDiagramState extends State<FractalDiagram> {
               ),
             ),
             */
-      ),
     );
+    */
   }
 
   List<Widget> _actions(MyPolicySet myPolicySet) => [

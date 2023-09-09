@@ -1,11 +1,9 @@
 import 'dart:math';
-
-import 'package:currency_ui/pay.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fractal2d/lib.dart';
 import 'package:fractal2d/policy/base/component_widgets_policy.dart';
+import 'package:fractal2d/policy/main/constrains.dart';
 import 'package:position_fractal/fractals/offset.dart';
-import 'package:signed_fractal/models/event.dart';
-
 import '/diagram_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +11,9 @@ mixin MyComponentWidgetsPolicy
     implements ComponentWidgetsPolicy, CustomStatePolicy {
   @override
   Widget showCustomWidgetWithComponentFractalOver(
-      BuildContext context, ComponentFractal componentData) {
+    BuildContext context,
+    ComponentFractal componentData,
+  ) {
     bool isJunction = componentData.type == 'junction';
     bool showOptions =
         (!isMultipleSelectionOn) && (!isReadyToConnect) && !isJunction;
@@ -22,11 +22,11 @@ mixin MyComponentWidgetsPolicy
       visible: componentData.isHighlightVisible,
       child: Stack(
         children: [
-          if (showOptions) componentTopOptions(componentData, context),
-          //if (showOptions) componentBottomOptions(componentData),
+          if (showOptions) componentTopOptionsArea(componentData, context),
+          if (showOptions) componentBottomOptionsArea(componentData, context),
           highlight(
             componentData,
-            isMultipleSelectionOn ? Colors.cyan : Theme.of(context).canvasColor,
+            isMultipleSelectionOn ? Colors.cyan : Colors.grey,
           ),
           if (showOptions) resizeCorner(componentData),
           if (isJunction && !isReadyToConnect) junctionOptions(componentData),
@@ -35,7 +35,10 @@ mixin MyComponentWidgetsPolicy
     );
   }
 
-  Widget componentTopOptions(ComponentFractal f, context) {
+  Widget componentTopOptionsArea(
+    ComponentFractal f,
+    BuildContext ctx,
+  ) {
     final width = f.size.width.round();
     final height = f.size.height.round();
     OffsetF tLeft = state.toCanvasCoordinates(f.position.value);
@@ -46,58 +49,19 @@ mixin MyComponentWidgetsPolicy
       ),
     );
 
-    final price = (width * height / 100).round() / 5000;
-
     const double maxW = 320;
     final double w = max(bRight.dx - tLeft.dx, maxW);
+
     return Positioned(
       left: tLeft.dx - 5,
-      top: tLeft.dy - 42,
+      top: tLeft.dy - 46,
       child: Container(
-        width: w,
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(4),
-        height: 42,
-        child: Flex(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          direction: Axis.horizontal,
-          children: [
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith(
-                  (Set<MaterialState> states) =>
-                      Theme.of(context).canvasColor.withOpacity(0.7),
-                ),
-              ),
-              onPressed: () {
-                CryptoPay.request(price);
-              },
-              child: Row(
-                children: [
-                  Icon(Icons.monetization_on),
-                  const SizedBox(width: 8),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('w: $width'),
-                      Text('h: $height'),
-                    ],
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '${price.toStringAsFixed(4)} Ξ',
-                    style: TextStyle(
-                      fontSize: 21,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Image.asset('assets/icons/metamask.png'),
-                  ),
-                ],
-              ),
-            ),
-            /*
+          width: w,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(0),
+          height: 48,
+          child: componentTopRow(f, ctx)
+          /*
           OptionIcon(
             color: Colors.grey.withOpacity(0.7),
             iconData: Icons.delete_forever,
@@ -142,29 +106,71 @@ mixin MyComponentWidgetsPolicy
                 model.removeComponentConnections(componentData.id),
           ),
           */
-          ],
-        ),
-      ),
+
+          ),
     );
   }
 
-  Widget componentBottomOptions(ComponentFractal componentData) {
-    final componentBottomLeftCorner = state.toCanvasCoordinates(
-      componentData.position.value +
-          componentData.size.value.size.bottomLeft(Offset.zero).f,
+  Widget componentTopRow(ComponentFractal f, BuildContext ctx) {
+    final width = f.size.width;
+    final height = f.size.height;
+    final price = (width * height / 100).round() / 5000;
+
+    return Flex(
+      //mainAxisAlignment: MainAxisAlignment.center,
+      direction: Axis.horizontal,
+      children: [],
     );
+  }
+
+  Widget componentBottomOptionsArea(ComponentFractal f, BuildContext ctx) {
+    final bLeft = state.toCanvasCoordinates(
+      f.position.value + f.size.value.size.bottomLeft(Offset.zero).f,
+    );
+
+    final width = f.size.width.round();
+    final height = f.size.height.round();
+    OffsetF tLeft = state.toCanvasCoordinates(f.position.value);
+    OffsetF bRight = state.toCanvasCoordinates(
+      OffsetF(
+        bLeft.dx + width,
+        bLeft.dy + height,
+      ),
+    );
+
+    const double maxW = 320;
+    final double w = max(bRight.dx - tLeft.dx, maxW);
+
     return Positioned(
-      left: componentBottomLeftCorner.dx - 16,
-      top: componentBottomLeftCorner.dy + 8,
-      child: Row(
+      left: bLeft.dx - 5,
+      top: bLeft.dy,
+      child: Container(
+        width: width.toDouble(),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(0),
+        height: 48,
+        child: componentBottomRow(f, ctx),
+      ), /*Row(
         children: [
           OptionIcon(
-            color: Colors.grey.withOpacity(0.7),
+            color: Colors.grey.withOpacity(0.6),
+            iconData: Icons.remove,
+            tooltip: 'remove',
+            size: 24,
+            onPressed: () {
+              OffsetF.zero.store(f);
+            },
+          ),*/
+      /*
+          OptionIcon(
+            color: Colors.grey.withOpacity(0.6),
             iconData: Icons.arrow_upward,
             tooltip: 'bring to front',
             size: 24,
             shape: BoxShape.rectangle,
-            onPressed: () => model.moveComponentToTheFront(componentData.id),
+            onPressed: () => model.moveComponentToTheFront(
+              componentData.id,
+            ),
           ),
           SizedBox(width: 12),
           OptionIcon(
@@ -173,7 +179,9 @@ mixin MyComponentWidgetsPolicy
             tooltip: 'move to back',
             size: 24,
             shape: BoxShape.rectangle,
-            onPressed: () => model.moveComponentToTheBack(componentData.id),
+            onPressed: () => model.moveComponentToTheBack(
+              componentData.id,
+            ),
           ),
           SizedBox(width: 40),
           OptionIcon(
@@ -186,8 +194,19 @@ mixin MyComponentWidgetsPolicy
               componentData.updateComponent();
             },
           ),
-        ],
-      ),
+          */
+    );
+  }
+
+  Widget componentBottomRow(ComponentFractal f, BuildContext ctx) {
+    final width = f.size.width;
+    final height = f.size.height;
+    final price = (width * height / 100).round() / 5000;
+
+    return Flex(
+      //mainAxisAlignment: MainAxisAlignment.center,
+      direction: Axis.horizontal,
+      children: [],
     );
   }
 
@@ -224,9 +243,14 @@ mixin MyComponentWidgetsPolicy
       child: GestureDetector(
         onPanUpdate: (details) {
           final offset = details.delta / state.scale;
-          componentData.size.move(
-            componentData.size.value + offset.f,
-          );
+          var newSize = componentData.size.value + offset.f;
+          if (this is ConstrainsPolicy) {
+            newSize = (this as ConstrainsPolicy).constrainSize(
+              componentData,
+              newSize,
+            );
+          }
+          componentData.size.move(newSize);
           model.updateLinks(componentData);
         },
         child: MouseRegion(

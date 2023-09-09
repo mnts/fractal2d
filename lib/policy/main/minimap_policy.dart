@@ -7,7 +7,9 @@ import '/diagram_editor.dart';
 import '../base/policy_set.dart';
 
 class MiniMapPolicySet extends PolicySet
-    with MiniMapInitPolicy, CanvasControlPolicy, MyComponentDesignPolicy {}
+    with MiniMapInitPolicy, CanvasControlPolicy, MyComponentDesignPolicy {
+  MiniMapPolicySet(super.model);
+}
 
 mixin MiniMapInitPolicy implements InitPolicy {
   @override

@@ -1,15 +1,28 @@
+import 'package:fractal/lib.dart';
 import 'package:fractal2d/lib.dart';
 import 'package:fractal2d/policy/base/component_policy.dart';
+import 'package:fractal2d/policy/main/constrains.dart';
 import 'package:fractals2d/models/link_style.dart';
 import 'package:position_fractal/fractals/offset.dart';
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum Movement { topLeft, topRight, bottomLeft, bottomRight }
 
 mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   @override
-  onComponentTap(int componentId) {
+  onComponentTap(component) {
+    final componentId = component.id;
+
+    /*
+    final url = component.link.value?.content ?? '';
+    if (url.isEmpty) return;
+    launchUrl(
+      Uri.parse(url),
+    );
+    */
+
     if (isMultipleSelectionOn) {
       if (multipleSelected.contains(componentId)) {
         removeComponentFromMultipleSelection(componentId);
@@ -79,7 +92,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   */
 
   bool connectComponents(int sourceComponentId, int targetComponentId) {
-    if (sourceComponentId == null) {
+    if (sourceComponentId == 0) {
       return false;
     }
     if (sourceComponentId == targetComponentId) {
@@ -94,7 +107,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
     model.connectTwoComponents(
       sourceComponentId,
       targetComponentId,
-      LinkStyle(
+      const LinkStyle(
         arrowType: ArrowType.pointedArrow,
         lineWidth: 1.5,
         backArrowType: ArrowType.centerCircle,
@@ -118,9 +131,13 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   @override
   onComponentScaleUpdate(ComponentFractal component, details) {
     final positionChange = details.localFocalPoint - startFocalPosition.offset;
-
-    final newPosition =
+    var newPosition =
         startComponentPosition.offset + (positionChange) / state.scale;
+
+    if (this is ConstrainsPolicy) {
+      newPosition =
+          (this as ConstrainsPolicy).constrain(component, newPosition);
+    }
 
     model.setComponentPosition(component, newPosition.f);
     if (isSnappingEnabled) {
@@ -219,10 +236,12 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
   @override
   onComponentScaleEnd(int componentId, ScaleEndDetails details) {
+    /*
     final reposition = OffsetF(
       lastPositionChange.dx,
       lastPositionChange.dy,
-    ); //..store();
+    );
+    */ //..store();
 
     lastPositionChange = Offset.zero;
   }

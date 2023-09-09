@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fractal/types/file.dart';
 import 'package:fractal2d/diagram_editor.dart';
-import 'package:fractal_flutter/fractal_flutter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
-  await FractalFlutter.init();
+  //FileF.path = '/home/mk/Desktop/pub/fractal2d/build/data';
+  FileF.isSecure = true;
+  if (kIsWeb) FileF.host = Uri.base.host;
+
+  WidgetsFlutterBinding.ensureInitialized();
   await DiagramAppFractal.prepare();
 
   runApp(

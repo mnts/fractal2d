@@ -19,4 +19,6 @@ class MyPolicySet extends PolicySet
         //
         //RiverpodPolicy,
         CustomStatePolicy,
-        CustomBehaviourPolicy {}
+        CustomBehaviourPolicy {
+  MyPolicySet(super.model);
+}

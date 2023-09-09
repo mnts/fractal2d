@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:position_fractal/fractals/offset.dart';
 import '../policy/base/link_attachment_policy.dart';
 
-extension CanvasModelWriter on CanvasModel {
+extension CanvasModelWriter on CanvasMix {
   /*
   /// Loads a diagram from json string.
   ///
@@ -39,7 +39,10 @@ extension CanvasModelWriter on CanvasModel {
     OffsetF tapPosition,
   ) {
     return getLink(linkId).determineLinkSegmentIndex(
-        tapPosition, state.position.value, state.scale);
+      tapPosition,
+      state.position.value,
+      state.scale,
+    );
   }
 
   updateLinks(ComponentFractal component) {
@@ -59,10 +62,19 @@ extension CanvasModelWriter on CanvasModel {
         throw ArgumentError('Invalid port connection.');
       }
 
-      Alignment firstLinkAlignment =
-          _getLinkEndpointAlignment(sourceComponent, targetComponent, link, 1);
+      Alignment firstLinkAlignment = _getLinkEndpointAlignment(
+        sourceComponent,
+        targetComponent,
+        link,
+        1,
+      );
+
       Alignment secondLinkAlignment = _getLinkEndpointAlignment(
-          targetComponent, sourceComponent, link, link.linkPoints.length - 2);
+        targetComponent,
+        sourceComponent,
+        link,
+        link.linkPoints.length - 2,
+      );
 
       _setLinkEndpoints(link, sourceComponent, targetComponent,
           firstLinkAlignment, secondLinkAlignment);
@@ -75,13 +87,18 @@ extension CanvasModelWriter on CanvasModel {
     LinkFractal link,
     int linkPointIndex,
   ) {
+    return Alignment.center;
+    /*
     if (this.policy is! LinkAttachmentPolicy) return Alignment.center;
     final policy = this.policy as LinkAttachmentPolicy;
 
     if (link.linkPoints.length <= 2) {
       return policy.getLinkEndpointAlignment(
         component1,
-        component2.position.value + component2.size.value.center(OffsetF()),
+        component2.position.value +
+            component2.size.value.center(
+              OffsetF(),
+            ),
       );
     } else {
       return policy.getLinkEndpointAlignment(
@@ -89,6 +106,7 @@ extension CanvasModelWriter on CanvasModel {
         link.linkPoints[linkPointIndex],
       );
     }
+    */
   }
 
   /// Creates a link between components. Returns created link's id.
@@ -98,6 +116,8 @@ extension CanvasModelWriter on CanvasModel {
     LinkStyle? linkStyle,
     dynamic data,
   ) {
+    return 0;
+    /*
     if (this.policy is! LinkAttachmentPolicy) return 0;
     final policy = this.policy as LinkAttachmentPolicy;
 
@@ -148,6 +168,7 @@ extension CanvasModelWriter on CanvasModel {
 
     notifyListeners();
     return linkId;
+    */
   }
 
   _setLinkEndpoints(
@@ -158,13 +179,17 @@ extension CanvasModelWriter on CanvasModel {
     Alignment alignment2,
   ) {
     link.setEndpoints(
-      component1.position.value + component1.getPointOnComponent(alignment1),
-      component2.position.value + component2.getPointOnComponent(alignment2),
+      component1.position.value +
+          component1.getPointOnComponent(
+            alignment1,
+          ),
+      component2.position.value +
+          component2.getPointOnComponent(
+            alignment2,
+          ),
     );
   }
-}
 
-extension ComponentWriter on CanvasModel {
   /// Update a component with [componentId].
   ///
   /// It calls [notifyListeners] function of [ChangeNotifier] on [ComponentFractal].
@@ -184,8 +209,11 @@ extension ComponentWriter on CanvasModel {
 
   /// Translates the component by [offset] value.
   moveComponent(int componentId, OffsetF offset) {
-    assert(componentExists(componentId),
-        'model does not contain this component id: $componentId');
+    assert(
+      componentExists(componentId),
+      'model does not contain this component id: $componentId',
+    );
+
     final comp = getComponent(componentId);
     comp.position.move(offset / state.scale);
     updateLinks(comp);
@@ -281,9 +309,7 @@ extension ComponentWriter on CanvasModel {
 
     return true;
   }
-}
 
-extension LinkWriter on CanvasModel {
   /// Makes all link's joints visible.
   showLinkJoints(int linkId) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
@@ -323,10 +349,15 @@ extension LinkWriter on CanvasModel {
   /// Indexed from 1.
   /// When the link is a straight line you want to add a point to index 1.
   insertLinkMiddlePoint(int linkId, OffsetF point, int index) {
-    assert(linkExists(linkId), 'model does not contain this link id: $linkId');
+    assert(
+      linkExists(linkId),
+      'model does not contain this link id: $linkId',
+    );
 
-    getLink(linkId)
-        .insertMiddlePoint(state.fromCanvasCoordinates(point), index);
+    getLink(linkId).insertMiddlePoint(
+      state.fromCanvasCoordinates(point),
+      index,
+    );
   }
 
   /// Sets the new position ([point]) to the existing link's joint point.
@@ -334,8 +365,10 @@ extension LinkWriter on CanvasModel {
   /// Joints are indexed from 1.
   setLinkMiddlePointPosition(int linkId, OffsetF point, int index) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
-    getLink(linkId)
-        .setMiddlePointPosition(state.fromCanvasCoordinates(point), index);
+    getLink(linkId).setMiddlePointPosition(
+      state.fromCanvasCoordinates(point),
+      index,
+    );
   }
 
   /// Updates link's joint position by [offset].
@@ -344,7 +377,10 @@ extension LinkWriter on CanvasModel {
   moveLinkMiddlePoint(int linkId, OffsetF offset, int index) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
 
-    getLink(linkId).moveMiddlePoint(offset / state.scale, index);
+    getLink(linkId).moveMiddlePoint(
+      offset / state.scale,
+      index,
+    );
   }
 
   /// Removes the joint on [index]th place from the link.

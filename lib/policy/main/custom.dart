@@ -41,7 +41,7 @@ mixin CustomStatePolicy implements PolicySet {
   hideAllHighlights() {
     model.hideAllLinkJoints();
     hideLinkOption();
-    for (final component in model.components.values) {
+    for (final component in model.components) {
       if (component.isHighlightVisible) {
         component.hideHighlight();
         model.updateComponent(component.id);
@@ -86,7 +86,7 @@ mixin CustomStatePolicy implements PolicySet {
   }
 
   int duplicate(ComponentFractal componentData) {
-    var cd = ComponentFractal(
+    final c = ComponentFractal(
       //type: componentData.type,
       size: componentData.size.value,
       data: componentData.data,
@@ -95,8 +95,8 @@ mixin CustomStatePolicy implements PolicySet {
         componentData.position.y + 20,
       ),
     );
-    int id = model.components.add(cd);
-    return id;
+    c.synch();
+    return c.id;
   }
 
   showLinkOption(int linkId, OffsetF position) {
@@ -110,12 +110,12 @@ mixin CustomStatePolicy implements PolicySet {
 
   //grid
 
-  double gridGap = 30;
+  double gridGap = 20;
 
 // if the component is this pixels close to grid line than it snaps to it.
   double snapSize = 10;
 
-  bool isSnappingEnabled = true;
+  bool isSnappingEnabled = false;
 
   switchIsSnappingEnabled() {
     isSnappingEnabled = !isSnappingEnabled;
@@ -142,15 +142,17 @@ mixin CustomBehaviourPolicy implements PolicySet, CustomStatePolicy {
     });
     hideAllHighlights();
     multipleSelected = [];
-    duplicated.forEach((componentId) {
+    for (var componentId in duplicated) {
       addComponentToMultipleSelection(componentId);
       highlightComponent(componentId);
       model.moveComponentToTheFront(componentId);
-    });
+    }
   }
 
   selectAll() {
-    var components = model.components.keys;
+    var components = model.components.map(
+      (c) => c.id,
+    );
 
     for (var componentId in components) {
       addComponentToMultipleSelection(componentId);

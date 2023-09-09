@@ -1,4 +1,4 @@
-import 'package:fractal2d/extensions/color.dart';
+import 'package:fractal_flutter/extensions/color.dart';
 import 'package:fractal2d/extensions/link_style.dart';
 import 'package:fractal2d/extensions/position.dart';
 import 'package:fractals2d/models/link_style.dart';

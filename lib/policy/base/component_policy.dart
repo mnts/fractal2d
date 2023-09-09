@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 
 /// Allows you to define the component behaviour on any gesture registered by the [Component].
 mixin ComponentPolicy on BasePolicySet {
-  onComponentTap(int componentId) {}
+  onComponentTap(ComponentFractal componentId) {}
 
   onComponentTapDown(int componentId, TapDownDetails details) {}
 

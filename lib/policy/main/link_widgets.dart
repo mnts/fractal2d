@@ -49,15 +49,18 @@ mixin MyLinkWidgetsPolicy implements LinkWidgetsPolicy, CustomStatePolicy {
               model.removeLink(linkData.id);
             },
             child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.7),
-                  shape: BoxShape.circle,
-                ),
-                width: 32,
-                height: 32,
-                child: Center(child: Icon(Icons.close, size: 20))),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.7),
+                shape: BoxShape.circle,
+              ),
+              width: 32,
+              height: 32,
+              child: const Center(
+                child: Icon(Icons.close, size: 20),
+              ),
+            ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           GestureDetector(
             onTap: () {
               showEditLinkDialog(
@@ -66,13 +69,16 @@ mixin MyLinkWidgetsPolicy implements LinkWidgetsPolicy, CustomStatePolicy {
               );
             },
             child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.7),
-                  shape: BoxShape.circle,
-                ),
-                width: 32,
-                height: 32,
-                child: Center(child: Icon(Icons.edit, size: 20))),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.7),
+                shape: BoxShape.circle,
+              ),
+              width: 32,
+              height: 32,
+              child: const Center(
+                child: Icon(Icons.edit, size: 20),
+              ),
+            ),
           ),
         ],
       ),

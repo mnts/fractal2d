@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:app_fractal/screen.dart';
 import 'package:fractal/data.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:flutter/material.dart';
 import 'package:signed_fractal/models/event.dart';
+import 'package:fractal_layout/builders/screen.dart';
 
 class TextBody extends StatefulWidget {
   final ComponentFractal component;
@@ -53,7 +55,7 @@ class _TextBodyState extends State<TextBody> {
     return Container(
       decoration: BoxDecoration(
         color:
-            Colors.grey.shade500.withOpacity(0.5), //component.color.toMaterial,
+            Colors.grey.shade200.withOpacity(0.5), //component.color.toMaterial,
         borderRadius: BorderRadius.circular(8),
         image: image,
 
@@ -68,48 +70,51 @@ class _TextBodyState extends State<TextBody> {
         ],
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: 8,
+        horizontal: 2,
         vertical: 2,
       ),
-      child: true
-          ? null
-          : Column(
-              children: [
-                Container(
-                  height: 20,
-                  //color: Colors.grey.withOpacity(0.8),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        fillColor: Colors.white.withOpacity(0.7)),
-                    /*'${data?.toMap()}' ?? */ initialValue:
-                        data?.file?.name ?? '',
+      child: switch (data) {
+        ScreenFractal d => d.build(context),
+        EventFractal() => null,
+        /*Column(
+            children: [
+              Container(
+                height: 20,
+                //color: Colors.grey.withOpacity(0.8),
+                child: TextFormField(
+                  decoration:
+                      InputDecoration(fillColor: Colors.white.withOpacity(0.7)),
+                  /*'${data?.toMap()}' ?? */ initialValue:
+                      data?.file?.name ?? '',
+                ),
+              ),
+              Container(
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _ctrl,
+                  scrollPadding: EdgeInsets.all(8),
+                  expands: true,
+                  maxLines: null,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter text',
+                    hintStyle: TextStyle(),
                   ),
                 ),
-                Container(
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _ctrl,
-                    scrollPadding: EdgeInsets.all(8),
-                    expands: true,
-                    maxLines: null,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter text',
-                      hintStyle: TextStyle(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
+          ),*/
+        null => null,
+      },
     );
   }
 }

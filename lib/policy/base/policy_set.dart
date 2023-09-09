@@ -18,9 +18,13 @@ class PolicySet extends BasePolicySet
         LinkWidgetsPolicy,
         CanvasWidgetsPolicy,
         ComponentWidgetsPolicy {
-  PolicySet() {
-    model = CanvasModel(this);
-    state = CanvasState();
+  PolicySet(super.model) {
     initializeDiagramEditor();
+    /*
+    if (!policy.state.isInitialized) {
+      policy.initializeDiagramEditor();
+      policy.state.isInitialized = true;
+    }
+    */
   }
 }

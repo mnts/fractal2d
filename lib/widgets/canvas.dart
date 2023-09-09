@@ -1,7 +1,5 @@
 //import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider, Consumer, Provider;
-import 'package:fractal2d/extensions/color.dart';
 import 'package:fractal2d/policy/defaults/canvas_move.dart';
-import 'package:fractal2d/widgets/options.dart';
 import 'package:fractals2d/models/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:fractals2d/models/link_data.dart';
@@ -52,8 +50,8 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     super.dispose();
   }
 
-  List<Widget> showComponents(CanvasModel canvasModel) {
-    var zOrderedComponents = canvasModel.components.values.toList();
+  List<Widget> showComponents(CanvasMix canvasModel) {
+    var zOrderedComponents = canvasModel.components.toList();
     zOrderedComponents.sort((a, b) => a.zOrder.compareTo(b.zOrder));
 
     return [
@@ -71,7 +69,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     ];
   }
 
-  List<Widget> showLinks(CanvasModel canvasModel) {
+  List<Widget> showLinks(CanvasMix canvasModel) {
     return canvasModel.links.values.map((LinkFractal linkData) {
       return FChangeNotifierProvider<LinkFractal>.value(
         value: linkData,
@@ -80,8 +78,8 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     }).toList();
   }
 
-  List<Widget> showOtherWithComponentFractalUnder(CanvasModel canvasModel) {
-    return canvasModel.components.values.map((ComponentFractal componentData) {
+  List<Widget> showOtherWithComponentFractalUnder(CanvasMix canvasModel) {
+    return canvasModel.components.map((ComponentFractal componentData) {
       return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
@@ -96,8 +94,8 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     }).toList();
   }
 
-  List<Widget> showOtherWithComponentFractalOver(CanvasModel canvasModel) {
-    return canvasModel.components.values.map((ComponentFractal componentData) {
+  List<Widget> showOtherWithComponentFractalOver(CanvasMix canvasModel) {
+    return canvasModel.components.map((ComponentFractal componentData) {
       return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
@@ -120,7 +118,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     return policy.showCustomWidgetsOnCanvasForeground(context);
   }
 
-  Widget canvasStack(CanvasModel canvasModel) {
+  Widget canvasStack(CanvasMix canvasModel) {
     return Stack(
       clipBehavior: Clip.none,
       fit: StackFit.expand,
@@ -136,7 +134,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     );
   }
 
-  Widget canvasAnimated(CanvasModel canvasModel) {
+  Widget canvasAnimated(CanvasMix canvasModel) {
     return AnimatedBuilder(
       animation:
           (withControlPolicy as CanvasControlPolicy).getAnimationController(),
@@ -160,12 +158,13 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
   late DiagramAppFractal app;
 
   late PolicySet policy;
+
   @override
   Widget build(BuildContext context) {
     app = context.read<DiagramAppFractal>();
-    policy = app.policy;
+    policy = context.read<PolicySet>();
     init();
-    final canvasModel = Provider.of<CanvasModel>(context);
+    final canvasModel = Provider.of<CanvasMix>(context);
     final canvasState = Provider.of<CanvasState>(context);
 
     return RepaintBoundary(
@@ -176,13 +175,10 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
           onPointerSignal: (PointerSignalEvent event) =>
               policy.onCanvasPointerSignal(event),
           child: GestureDetector(
-            child: Container(
-              color: canvasState.color.toMaterial,
-              child: ClipRect(
-                child: (withControlPolicy != null)
-                    ? canvasAnimated(canvasModel)
-                    : canvasStack(canvasModel),
-              ),
+            child: ClipRect(
+              child: (withControlPolicy != null)
+                  ? canvasAnimated(canvasModel)
+                  : canvasStack(canvasModel),
             ),
             onScaleStart: (details) => policy.onCanvasScaleStart(details),
             onScaleUpdate: (details) => policy.onCanvasScaleUpdate(details),

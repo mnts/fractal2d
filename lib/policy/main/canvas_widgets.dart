@@ -7,10 +7,13 @@ import '../base/canvas_widgets_policy.dart';
 import '/diagram_editor.dart';
 import 'package:flutter/material.dart';
 
+import 'constrains.dart';
+
 mixin MyCanvasWidgetsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
   @override
   List<Widget> showCustomWidgetsOnCanvasBackground(BuildContext context) {
     return [
+      //if (gridGap > 0)
       Visibility(
         visible: isGridVisible,
         child: CustomPaint(
@@ -26,6 +29,7 @@ mixin MyCanvasWidgetsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
           ),
         ),
       ),
+      if (this is ConstrainsPolicy) (this as ConstrainsPolicy).showConstrains(),
       DragTarget<Fractal>(
         builder: (_, __, ___) => Container(),
         onWillAccept: (data) => true,

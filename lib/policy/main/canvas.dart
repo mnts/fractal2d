@@ -10,6 +10,7 @@ import 'package:signed_fractal/models/event.dart';
 
 import '/extensions/model.dart';
 import '/diagram_editor.dart';
+import 'constrains.dart';
 
 mixin MyCanvasPolicy implements CanvasPolicy, CustomStatePolicy {
   @override
@@ -44,7 +45,7 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomStatePolicy {
       192 / ratio,
     );
 
-    final pos = OffsetF(
+    var pos = OffsetF(
       position.dx - size.width / 2,
       position.dy - size.height / 2,
     );
@@ -59,10 +60,21 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomStatePolicy {
     final component = ComponentFractal(
       size: size,
       data: event,
+      to: model,
       position: state.fromCanvasCoordinates(
         pos,
       ),
     )..synch();
+
+    if (this is ConstrainsPolicy) {
+      pos = (this as ConstrainsPolicy)
+          .constrain(
+            component,
+            pos.offset,
+          )
+          .f;
+      component.position.move(pos);
+    }
 
     //model.moveComponentToTheFrontWithChildren(component.id);
     model.notifyListeners();

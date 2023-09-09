@@ -1,4 +1,4 @@
-import 'package:fractal2d/extensions/color.dart';
+import 'package:fractal_flutter/extensions/color.dart';
 import 'package:fractals2d/models/component.dart';
 import '/components/base_component_body.dart';
 import 'package:flutter/material.dart';

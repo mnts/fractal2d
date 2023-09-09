@@ -1,6 +1,7 @@
-import 'package:fractal2d/extensions/color.dart';
+import 'package:fractal_flutter/extensions/color.dart';
 import 'package:fractals2d/models/link_data.dart';
 import '../apps/diagram.dart';
+import '../policy/base/policy_set.dart';
 import '/utils/painter/link_joint_painter.dart';
 import '/utils/painter/link_painter.dart';
 import 'package:flutter/gestures.dart';
@@ -14,22 +15,21 @@ class Link extends StatelessWidget {
 
   @override
   Widget build(context) {
-    final app = context.read<DiagramAppFractal>(), policy = app.policy;
+    final app = context.read<DiagramAppFractal>();
 
     final linkData = Provider.of<LinkFractal>(context);
-    final canvasState = app.policy.state;
+    final policy = Provider.of<PolicySet>(context);
 
     LinkPainter linkPainter = LinkPainter(
       linkPoints: (linkData.linkPoints.map(
-        (point) => point * canvasState.scale + canvasState.position.value,
+        (point) => point * app.state.scale + app.state.position.value,
       )).toList(),
-      scale: canvasState.scale,
+      scale: app.state.scale,
       linkStyle: linkData.linkStyle,
     );
 
     return Listener(
-      onPointerSignal: (PointerSignalEvent event) =>
-          app.policy.onLinkPointerSignal(
+      onPointerSignal: (PointerSignalEvent event) => policy.onLinkPointerSignal(
         linkData.id,
         event,
       ),
@@ -75,9 +75,9 @@ class Link extends StatelessWidget {
                           policy.onLinkJointLongPressUp(index, linkData.id),
                       child: CustomPaint(
                         painter: LinkJointPainter(
-                          location: canvasState.toCanvasCoordinates(jointPoint),
+                          location: app.state.toCanvasCoordinates(jointPoint),
                           radius: 8,
-                          scale: canvasState.scale,
+                          scale: app.state.scale,
                           color: linkData.linkStyle.color.toMaterial,
                         ),
                       ),

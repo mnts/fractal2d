@@ -16,7 +16,7 @@ mixin CanvasControlPolicy on BasePolicySet {
   double _baseScale = 1.0;
   var _basePosition = Offset.zero;
 
-  var _lastFocalPoint = Offset(0, 0);
+  var _lastFocalPoint = Offset.zero;
 
   var transformPosition = Offset.zero;
   double transformScale = 1.0;
@@ -72,7 +72,7 @@ mixin CanvasControlPolicy on BasePolicySet {
     transformPosition = Offset.zero;
     transformScale = 1.0;
 
-    state.updateCanvas();
+    //state.updateCanvas();
   }
 
   _updateCanvasModelWithLastValues() {

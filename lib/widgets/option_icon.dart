@@ -28,11 +28,12 @@ class OptionIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.7),
+        color: Colors.grey.withOpacity(0.4),
         shape: shape,
       ),
       child: IconButton(
         tooltip: tooltip,
+        color: color,
         onPressed: () {
           if (onPressed != null) {
             onPressed();

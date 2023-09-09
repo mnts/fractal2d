@@ -45,16 +45,20 @@ dependencies:
     path: '../fractal_flutter'
   fractals2d:
     path: '../fractals2d'
+  fractal_layout:
+    path: '../fractal_layout'
   fractal_base:
     path: '../fractal_base'
+  app_fractal:
+    path: '../app_fractal'
   position_fractal:
     path: '../position_fractal'
   currency_ui:
     path: '../currency_ui'
-  
   signed_fractal:
     path: '../signed_fractal'
   color: ^3.0.0
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +78,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/icons/
     - assets/tiles/
     - assets/images/
   # The following line ensures that the Material Icons font is
