@@ -21,10 +21,14 @@ class LinkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
-      ..color = linkStyle.color.toMaterial
+      ..color = Colors.blue //linkStyle.color.toMaterial
       ..strokeWidth = linkStyle.lineWidth * scale
+      ..strokeJoin = StrokeJoin.bevel
+      ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
+    Path path = Path();
+    /*
     for (int i = 0; i < linkPoints.length - 1; i++) {
       if (linkPoints.length == 2) {
         canvas.drawPath(
@@ -44,6 +48,8 @@ class LinkPainter extends CustomPainter {
           paint,
         );
       } else if (i == 0) {
+        path.moveTo(linkPoints[i].dx, linkPoints[i].dy);
+        /*
         canvas.drawPath(
           linkStyle.getLinePath(
             VectorUtils.getShorterLineStart(
@@ -56,7 +62,9 @@ class LinkPainter extends CustomPainter {
           ),
           paint,
         );
-      } else if (i == linkPoints.length - 2) {
+        */
+//      } else if (i == linkPoints.length - 2) {
+      } else if (linkPoints.length < 3 && i == linkPoints.length - 2) {
         canvas.drawPath(
           linkStyle.getLinePath(
             linkPoints[i].offset,
@@ -70,6 +78,7 @@ class LinkPainter extends CustomPainter {
           paint,
         );
       } else {
+        /*
         canvas.drawPath(
             linkStyle.getLinePath(
               linkPoints[i].offset,
@@ -77,15 +86,40 @@ class LinkPainter extends CustomPainter {
               scale,
             ),
             paint);
+        */
       }
     }
+    */
+
+    //path.moveTo(linkPoints[0].dx, linkPoints[0].dy);
+
+    final ctrlV = 0.2;
+    var points = <OffsetF>[]..addAll(linkPoints);
+    path.reset();
+    points.insert(0, OffsetF(points.first.dx, points.first.dy));
+    points.add(OffsetF(points.last.dx, points.last.dy));
+    points.add(OffsetF(points.last.dx, points.last.dy));
+    path.moveTo(points.first.dx, points.first.dy);
+
+    double ax, ay, bx = 0, by = 0;
+    for (int i = 1; i < points.length - 3; i++) {
+      ax = points[i].dx + (points[i + 1].dx - points[i - 1].dx) * ctrlV * 2;
+      ay = points[i].dy + (points[i + 1].dy - points[i - 1].dy) * ctrlV;
+      bx = points[i + 1].dx - (points[i + 2].dx - points[i].dx) * ctrlV * 2;
+      by = points[i + 1].dy - (points[i + 2].dy - points[i].dy) * ctrlV;
+      path.cubicTo(ax, ay, bx, by, points[i + 1].dx, points[i + 1].dy);
+    }
+    canvas.drawPath(path, paint);
+
+    //paint.color = Colors.blue.withOpacity(0.8); //linkStyle.color.toMaterial
 
     paint..style = PaintingStyle.fill;
     canvas.drawPath(
         linkStyle.getArrowTipPath(
           linkStyle.arrowType,
           linkStyle.arrowSize,
-          linkPoints[linkPoints.length - 2],
+          //linkPoints[linkPoints.length - 2],
+          OffsetF(bx, by),
           linkPoints[linkPoints.length - 1],
           scale,
         ),

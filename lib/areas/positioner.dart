@@ -7,7 +7,7 @@ class PositionerArea extends StatelessWidget {
 
   @override
   Widget build(context) {
-    final app = context.watch<DiagramAppFractal>();
+    //final app = context.watch<DiagramAppFractal>();
 
     return Container(
       color: Colors.orange.withAlpha(200),

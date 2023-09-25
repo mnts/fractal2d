@@ -7,7 +7,7 @@ class OptionsArea extends StatelessWidget {
 
   @override
   Widget build(context) {
-    final app = context.watch<DiagramAppFractal>();
+    //final app = context.watch<DiagramAppFractal>();
 
     double width = 300;
 

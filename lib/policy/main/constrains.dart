@@ -9,8 +9,8 @@ mixin ConstrainsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
   Size constrains = const Size(1000, 1000);
 
   Widget showConstrains() => Positioned(
-        top: state.position.value.dy + state.scale * 1,
-        left: state.position.value.dx + state.scale * 1,
+        top: state.position.dy + state.scale * 1,
+        left: state.position.dx + state.scale * 1,
         child: Container(
           width: constrains.width * state.scale,
           height: constrains.height * state.scale,

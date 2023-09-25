@@ -1,31 +1,34 @@
 import 'package:fractals2d/models/policy.dart';
 import 'package:flutter/gestures.dart';
 
+import '../../lib.dart';
+
 /// Allows you to define the link behaviour on any gesture registered by the [Link].
 mixin LinkPolicy on BasePolicySet {
-  onLinkTap(int linkId) {}
+  onLinkTap(LinkFractal link) {}
 
-  onLinkTapDown(int linkId, TapDownDetails details) {}
+  onLinkTapDown(LinkFractal link, TapDownDetails details) {}
 
-  onLinkTapUp(int linkId, TapUpDetails details) {}
+  onLinkTapUp(LinkFractal link, TapUpDetails details) {}
 
-  onLinkTapCancel(int linkId) {}
+  onLinkTapCancel(LinkFractal link) {}
 
-  onLinkScaleStart(int linkId, ScaleStartDetails details) {}
+  onLinkScaleStart(LinkFractal link, ScaleStartDetails details) {}
 
-  onLinkScaleUpdate(int linkId, ScaleUpdateDetails details) {}
+  onLinkScaleUpdate(LinkFractal link, ScaleUpdateDetails details) {}
 
-  onLinkScaleEnd(int linkId, ScaleEndDetails details) {}
+  onLinkScaleEnd(LinkFractal link, ScaleEndDetails details) {}
 
-  onLinkLongPress(int linkId) {}
+  onLinkLongPress(LinkFractal link) {}
 
-  onLinkLongPressStart(int linkId, LongPressStartDetails details) {}
+  onLinkLongPressStart(LinkFractal link, LongPressStartDetails details) {}
 
-  onLinkLongPressMoveUpdate(int linkId, LongPressMoveUpdateDetails details) {}
+  onLinkLongPressMoveUpdate(
+      LinkFractal link, LongPressMoveUpdateDetails details) {}
 
-  onLinkLongPressEnd(int linkId, LongPressEndDetails details) {}
+  onLinkLongPressEnd(LinkFractal link, LongPressEndDetails details) {}
 
-  onLinkLongPressUp(int linkId) {}
+  onLinkLongPressUp(LinkFractal link) {}
 
-  onLinkPointerSignal(int linkId, PointerSignalEvent event) {}
+  onLinkPointerSignal(LinkFractal link, PointerSignalEvent event) {}
 }

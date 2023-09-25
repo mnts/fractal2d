@@ -15,22 +15,20 @@ class Link extends StatelessWidget {
 
   @override
   Widget build(context) {
-    final app = context.read<DiagramAppFractal>();
-
-    final linkData = Provider.of<LinkFractal>(context);
+    final link = Provider.of<LinkFractal>(context);
     final policy = Provider.of<PolicySet>(context);
 
     LinkPainter linkPainter = LinkPainter(
-      linkPoints: (linkData.linkPoints.map(
-        (point) => point * app.state.scale + app.state.position.value,
+      linkPoints: (link.linkPoints.map(
+        (point) => point * policy.state.scale + policy.state.position,
       )).toList(),
-      scale: app.state.scale,
-      linkStyle: linkData.linkStyle,
+      scale: policy.state.scale,
+      linkStyle: link.linkStyle,
     );
 
     return Listener(
       onPointerSignal: (PointerSignalEvent event) => policy.onLinkPointerSignal(
-        linkData.id,
+        link,
         event,
       ),
       child: GestureDetector(
@@ -39,76 +37,71 @@ class Link extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              ...linkData.linkPoints
-                  .getRange(1, linkData.linkPoints.length - 1)
-                  .map(
+              ...link.linkPoints.getRange(1, link.linkPoints.length - 1).map(
                 (jointPoint) {
-                  var index = linkData.linkPoints.indexOf(jointPoint);
+                  var index = link.linkPoints.indexOf(jointPoint);
                   return Visibility(
-                    visible: linkData.areJointsVisible,
+                    visible: link.areJointsVisible,
                     child: GestureDetector(
-                      onTap: () => policy.onLinkJointTap(index, linkData.id),
-                      onTapDown: (TapDownDetails details) => policy
-                          .onLinkJointTapDown(index, linkData.id, details),
-                      onTapUp: (TapUpDetails details) =>
-                          policy.onLinkJointTapUp(index, linkData.id, details),
+                      onTap: () => policy.onLinkJointTap(index, link),
+                      onTapDown: (details) =>
+                          policy.onLinkJointTapDown(index, link, details),
+                      onTapUp: (details) =>
+                          policy.onLinkJointTapUp(index, link, details),
                       onTapCancel: () =>
-                          policy.onLinkJointTapCancel(index, linkData.id),
-                      onScaleStart: (ScaleStartDetails details) => policy
-                          .onLinkJointScaleStart(index, linkData.id, details),
-                      onScaleUpdate: (ScaleUpdateDetails details) => policy
-                          .onLinkJointScaleUpdate(index, linkData.id, details),
-                      onScaleEnd: (ScaleEndDetails details) => policy
-                          .onLinkJointScaleEnd(index, linkData.id, details),
+                          policy.onLinkJointTapCancel(index, link),
+                      onScaleStart: (details) =>
+                          policy.onLinkJointScaleStart(index, link, details),
+                      onScaleUpdate: (details) =>
+                          policy.onLinkJointScaleUpdate(index, link, details),
+                      onScaleEnd: (details) =>
+                          policy.onLinkJointScaleEnd(index, link, details),
                       onLongPress: () =>
-                          policy.onLinkJointLongPress(index, linkData.id),
-                      onLongPressStart: (LongPressStartDetails details) =>
-                          policy.onLinkJointLongPressStart(
-                              index, linkData.id, details),
-                      onLongPressMoveUpdate:
-                          (LongPressMoveUpdateDetails details) =>
-                              policy.onLinkJointLongPressMoveUpdate(
-                                  index, linkData.id, details),
-                      onLongPressEnd: (LongPressEndDetails details) => policy
-                          .onLinkJointLongPressEnd(index, linkData.id, details),
+                          policy.onLinkJointLongPress(index, link),
+                      onLongPressStart: (details) => policy
+                          .onLinkJointLongPressStart(index, link, details),
+                      onLongPressMoveUpdate: (details) => policy
+                          .onLinkJointLongPressMoveUpdate(index, link, details),
+                      onLongPressEnd: (details) =>
+                          policy.onLinkJointLongPressEnd(index, link, details),
                       onLongPressUp: () =>
-                          policy.onLinkJointLongPressUp(index, linkData.id),
+                          policy.onLinkJointLongPressUp(index, link),
                       child: CustomPaint(
                         painter: LinkJointPainter(
-                          location: app.state.toCanvasCoordinates(jointPoint),
+                          location:
+                              policy.state.toCanvasCoordinates(jointPoint),
                           radius: 8,
-                          scale: app.state.scale,
-                          color: linkData.linkStyle.color.toMaterial,
+                          scale: policy.state.scale,
+                          color: link.linkStyle.color.toMaterial,
                         ),
                       ),
                     ),
                   );
                 },
               ).toList(),
-              ...policy.showWidgetsWithLinkData(context, linkData),
+              ...policy.showWidgetsWithLinkData(context, link),
             ],
           ),
         ),
-        onTap: () => policy.onLinkTap(linkData.id),
+        onTap: () => policy.onLinkTap(link),
         onTapDown: (TapDownDetails details) =>
-            policy.onLinkTapDown(linkData.id, details),
-        onTapUp: (TapUpDetails details) =>
-            policy.onLinkTapUp(linkData.id, details),
-        onTapCancel: () => policy.onLinkTapCancel(linkData.id),
+            policy.onLinkTapDown(link, details),
+        onTapUp: (TapUpDetails details) => policy.onLinkTapUp(link, details),
+        onTapCancel: () => policy.onLinkTapCancel(link),
         onScaleStart: (ScaleStartDetails details) =>
-            policy.onLinkScaleStart(linkData.id, details),
+            policy.onLinkScaleStart(link, details),
         onScaleUpdate: (ScaleUpdateDetails details) =>
-            policy.onLinkScaleUpdate(linkData.id, details),
+            policy.onLinkScaleUpdate(link, details),
         onScaleEnd: (ScaleEndDetails details) =>
-            policy.onLinkScaleEnd(linkData.id, details),
-        onLongPress: () => policy.onLinkLongPress(linkData.id),
+            policy.onLinkScaleEnd(link, details),
+        onLongPress: () => policy.onLinkLongPress(link),
         onLongPressStart: (LongPressStartDetails details) =>
-            policy.onLinkLongPressStart(linkData.id, details),
+            policy.onLinkLongPressStart(link, details),
         onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) =>
-            policy.onLinkLongPressMoveUpdate(linkData.id, details),
+            policy.onLinkLongPressMoveUpdate(link, details),
         onLongPressEnd: (LongPressEndDetails details) =>
-            policy.onLinkLongPressEnd(linkData.id, details),
-        onLongPressUp: () => policy.onLinkLongPressUp(linkData.id),
+            policy.onLinkLongPressEnd(link, details),
+        onLongPressUp: () => policy.onLinkLongPressUp(link),
       ),
     );
   }

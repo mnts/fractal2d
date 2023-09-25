@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 void main() async {
   //FileF.path = '/home/mk/Desktop/pub/fractal2d/build/data';
   FileF.isSecure = true;
-  if (kIsWeb) FileF.host = Uri.base.host;
+  FileF.host = (kIsWeb) ? Uri.base.host : 'ego.bio';
 
   WidgetsFlutterBinding.ensureInitialized();
   await DiagramAppFractal.prepare();

@@ -4,7 +4,7 @@ import '/diagram_editor.dart';
 import 'package:flutter/material.dart';
 
 void showEditLinkDialog(BuildContext context, LinkFractal linkData) {
-  MyLinkData customData = linkData.data;
+  MyLinkData? customData; // = linkData.data;
 
   Color color = linkData.linkStyle.color.toMaterial;
   LineType lineTypeDropdown = linkData.linkStyle.lineType;
@@ -28,9 +28,9 @@ void showEditLinkDialog(BuildContext context, LinkFractal linkData) {
   bool isLabelsEditShown = false;
 
   final startLabelController =
-      TextEditingController(text: customData.startLabel ?? '');
+      TextEditingController(); //text: customData.startLabel ?? '');
   final endLabelController =
-      TextEditingController(text: customData.endLabel ?? '');
+      TextEditingController(); //text: customData.endLabel ?? '');
 
   showDialog(
     barrierDismissible: false,
@@ -418,9 +418,9 @@ void showEditLinkDialog(BuildContext context, LinkFractal linkData) {
                   linkData.linkStyle.arrowSize = arrowSizePick;
                   linkData.linkStyle.backArrowType = backArrowTypeDropdown;
                   linkData.linkStyle.backArrowSize = backArrowSizePick;
-                */
                   customData.startLabel = startLabelController.text;
                   customData.endLabel = endLabelController.text;
+                */
                   linkData.updateLink();
                   Navigator.of(context).pop();
                 },

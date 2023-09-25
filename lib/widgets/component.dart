@@ -1,31 +1,28 @@
 import 'package:fractal2d/policy/base/index.dart';
+import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import '../apps/diagram.dart';
 
 class Component extends StatelessWidget {
   const Component({super.key});
 
   @override
   Widget build(context) {
-    final app = context.watch<DiagramAppFractal>();
+    final c = context.watch<CanvasMix>();
 
-    final componentData = Provider.of<ComponentFractal>(context);
+    final component = Provider.of<ComponentFractal>(context);
     final policy = Provider.of<PolicySet>(context);
 
     return Positioned(
-      left: app.state.scale * componentData.position.value.dx +
-          app.state.position.value.dx,
-      top: app.state.scale * componentData.position.value.dy +
-          app.state.position.dy,
-      width: app.state.scale * componentData.size.width,
-      height: app.state.scale * componentData.size.height,
+      left: c.state.scale * component.position.value.dx + c.state.position.dx,
+      top: c.state.scale * component.position.value.dy + c.state.position.dy,
+      width: c.state.scale * component.size.width,
+      height: c.state.scale * component.size.height,
       child: Listener(
         onPointerSignal: (PointerSignalEvent event) {
-          policy.onComponentPointerSignal(componentData.id, event);
+          policy.onComponentPointerSignal(component, event);
         },
         child: GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -35,73 +32,73 @@ class Component extends StatelessWidget {
                 Positioned(
                   left: 0,
                   top: 0,
-                  width: componentData.size.width,
-                  height: componentData.size.height,
+                  width: component.size.width,
+                  height: component.size.height,
                   child: Container(
                     transform: Matrix4.identity()
                       ..scale(
-                        app.state.scale,
+                        c.state.scale,
                       ),
-                    child: policy.showComponentBody(componentData),
+                    child: policy.showComponentBody(component),
                   ),
                 ),
                 policy.showCustomWidgetWithComponentFractal(
                   context,
-                  componentData,
+                  component,
                 ),
               ],
             ),
-            onTap: () => policy.onComponentTap(componentData),
+            onTap: () => policy.onComponentTap(component),
             onTapDown: (details) {
-              policy.onComponentTapDown(componentData.id, details);
+              policy.onComponentTapDown(component, details);
             },
             onTapUp: (details) {
-              policy.onComponentTapUp(componentData.id, details);
+              policy.onComponentTapUp(component, details);
             },
             onTapCancel: () {
-              policy.onComponentTapCancel(componentData.id);
+              policy.onComponentTapCancel(component);
             },
             onScaleStart: (details) {
               policy.onComponentScaleStart(
-                componentData.id,
+                component,
                 details,
               );
             },
             onScaleUpdate: (details) {
               policy.onComponentScaleUpdate(
-                componentData,
+                component,
                 details,
               );
             },
             onScaleEnd: (details) {
               policy.onComponentScaleEnd(
-                componentData.id,
+                component,
                 details,
               );
             },
             onLongPress: () {
-              policy.onComponentLongPress(componentData.id);
+              policy.onComponentLongPress(component);
             },
             onLongPressStart: (details) {
               policy.onComponentLongPressStart(
-                componentData.id,
+                component,
                 details,
               );
             },
             onLongPressMoveUpdate: (details) {
               policy.onComponentLongPressMoveUpdate(
-                componentData.id,
+                component,
                 details,
               );
             },
             onLongPressEnd: (details) {
               policy.onComponentLongPressEnd(
-                componentData.id,
+                component,
                 details,
               );
             },
             onLongPressUp: () {
-              policy.onComponentLongPressUp(componentData.id);
+              policy.onComponentLongPressUp(component);
             }),
       ),
     );

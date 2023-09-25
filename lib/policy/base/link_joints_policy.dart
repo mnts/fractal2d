@@ -1,34 +1,37 @@
+import 'package:fractal2d/diagram_editor.dart';
 import 'package:fractals2d/models/policy.dart';
 import 'package:flutter/material.dart';
 
 /// Allows you to define the link's joint behaviour on any gesture registered by the link's joint.
 mixin LinkJointPolicy on BasePolicySet {
-  onLinkJointTap(int jointIndex, int linkId) {}
+  onLinkJointTap(int jointIndex, LinkFractal link) {}
 
-  onLinkJointTapDown(int jointIndex, int linkId, TapDownDetails details) {}
+  onLinkJointTapDown(
+      int jointIndex, LinkFractal link, TapDownDetails details) {}
 
-  onLinkJointTapUp(int jointIndex, int linkId, TapUpDetails details) {}
+  onLinkJointTapUp(int jointIndex, LinkFractal link, TapUpDetails details) {}
 
-  onLinkJointTapCancel(int jointIndex, int linkId) {}
+  onLinkJointTapCancel(int jointIndex, LinkFractal link) {}
 
   onLinkJointScaleStart(
-      int jointIndex, int linkId, ScaleStartDetails details) {}
+      int jointIndex, LinkFractal link, ScaleStartDetails details) {}
 
   onLinkJointScaleUpdate(
-      int jointIndex, int linkId, ScaleUpdateDetails details) {}
+      int jointIndex, LinkFractal link, ScaleUpdateDetails details) {}
 
-  onLinkJointScaleEnd(int jointIndex, int linkId, ScaleEndDetails details) {}
+  onLinkJointScaleEnd(
+      int jointIndex, LinkFractal link, ScaleEndDetails details) {}
 
-  onLinkJointLongPress(int jointIndex, int linkId) {}
+  onLinkJointLongPress(int jointIndex, LinkFractal link) {}
 
   onLinkJointLongPressStart(
-      int jointIndex, int linkId, LongPressStartDetails details) {}
+      int jointIndex, LinkFractal link, LongPressStartDetails details) {}
 
   onLinkJointLongPressMoveUpdate(
-      int jointIndex, int linkId, LongPressMoveUpdateDetails details) {}
+      int jointIndex, LinkFractal link, LongPressMoveUpdateDetails details) {}
 
   onLinkJointLongPressEnd(
-      int jointIndex, int linkId, LongPressEndDetails details) {}
+      int jointIndex, LinkFractal link, LongPressEndDetails details) {}
 
-  onLinkJointLongPressUp(int jointIndex, int linkId) {}
+  onLinkJointLongPressUp(int jointIndex, LinkFractal link) {}
 }

@@ -1,4 +1,4 @@
-import 'package:fractals2d/models/canvas.dart';
+import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/state.dart';
 
 import '/diagram_editor.dart';

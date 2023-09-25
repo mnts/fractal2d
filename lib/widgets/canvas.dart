@@ -1,18 +1,18 @@
 //import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider, Consumer, Provider;
 import 'package:fractal2d/policy/defaults/canvas_move.dart';
-import 'package:fractals2d/models/canvas.dart';
+import 'package:fractal_flutter/extensions/index.dart';
+import 'package:fractal_flutter/fractal_flutter.dart';
+import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:fractals2d/models/link_data.dart';
 import 'package:fractals2d/models/state.dart';
-import '../apps/diagram.dart';
+import 'package:provider/provider.dart';
 import '../policy/base/policy_set.dart';
 import '../policy/defaults/canvas_control_policy.dart';
 import 'component.dart';
 import 'link.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:fractal_flutter/fractal_flutter.dart';
 
 class DiagramEditorCanvas extends StatefulWidget {
   /// The canvas where all components and links are shown on.
@@ -60,9 +60,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
           key: Key('FCNP_${componentData.path}'),
           value: componentData,
           child: Component(
-            key: Key(
-              componentData.path,
-            ),
+            key: componentData.widgetKey('canvas'),
           ),
         ),
       ),
@@ -70,12 +68,17 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
   }
 
   List<Widget> showLinks(CanvasMix canvasModel) {
-    return canvasModel.links.values.map((LinkFractal linkData) {
-      return FChangeNotifierProvider<LinkFractal>.value(
-        value: linkData,
-        child: Link(),
-      );
-    }).toList();
+    return [
+      for (final link in canvasModel.links)
+        if (link.linkPoints.length > 1)
+          FChangeNotifierProvider<LinkFractal>.value(
+            value: link,
+            key: Key('Link_${link.path}'),
+            child: Link(
+              key: link.widgetKey('canvas'),
+            ),
+          )
+    ];
   }
 
   List<Widget> showOtherWithComponentFractalUnder(CanvasMix canvasModel) {
@@ -155,13 +158,10 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
 
   static GlobalKey canvasGlobalKey = GlobalKey();
 
-  late DiagramAppFractal app;
-
   late PolicySet policy;
 
   @override
   Widget build(BuildContext context) {
-    app = context.read<DiagramAppFractal>();
     policy = context.read<PolicySet>();
     init();
     final canvasModel = Provider.of<CanvasMix>(context);

@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:app_fractal/screen.dart';
 import 'package:fractal/data.dart';
+import 'package:fractal2d/diagram_editor.dart';
+import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:flutter/material.dart';
 import 'package:signed_fractal/models/event.dart';
@@ -33,7 +35,7 @@ class _TextBodyState extends State<TextBody> {
   bool loading = false;
   checkImage() {
     if (component.dataHash is! String) return;
-    EventFractal.request(component.dataHash!).then((d) {
+    EventFractal.map.request(component.dataHash!).then((d) {
       d.file?.load().then((bytes) {
         setState(() {
           image = DecorationImage(
@@ -54,28 +56,26 @@ class _TextBodyState extends State<TextBody> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color:
-            Colors.grey.shade200.withOpacity(0.5), //component.color.toMaterial,
+        color: Colors.grey.shade200.withOpacity(0.5),
         borderRadius: BorderRadius.circular(8),
         image: image,
-
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context)
-                .canvasColor, //component.borderColor.toMaterial,
-            spreadRadius: 1,
+            color: Theme.of(context).canvasColor, spreadRadius: 1,
             blurRadius: 8, //component.borderWidth,
             offset: Offset(1, 1),
           ),
         ],
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: 2,
-        vertical: 2,
+        horizontal: 8,
+        vertical: 4,
       ),
       child: switch (data) {
         ScreenFractal d => d.build(context),
-        EventFractal() => null,
+        EventFractal() => Center(
+            child: Text(content),
+          ),
         /*Column(
             children: [
               Container(

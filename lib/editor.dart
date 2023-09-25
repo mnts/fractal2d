@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:fractal/types/file.dart';
-import 'package:fractals2d/models/canvas.dart';
+import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/policy.dart';
 import 'package:fractals2d/models/state.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,10 +12,8 @@ import 'package:fractal_layout/layout.dart';
 import 'package:provider/provider.dart';
 import 'policy/base/index.dart';
 import 'policy/main/set.dart';
-import 'widgets/canvas.dart';
-import 'widgets/menu.dart';
+import 'widgets/index.dart';
 import 'package:flutter/material.dart' hide Color;
-import 'package:fractal_flutter/fractal_flutter.dart';
 
 class FractalDiagram extends StatefulWidget {
   const FractalDiagram({super.key});
@@ -34,15 +32,13 @@ class _FractalDiagramState extends State<FractalDiagram> {
   //bool isOptionsVisible = true;
 
   final app = DiagramAppFractal(
-    domain: 'fractal2d',
+    domain: FileF.host,
     color: const Color.rgb(100, 80, 200),
     title: FileF.host,
     name: FileF.host,
   )..complete();
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  late final policy = MyPolicySet(app);
 
   @override
   void initState() {
@@ -79,23 +75,6 @@ to discuss cooperation""",
         ),
         */
       ],
-      child: FMultiProvider(
-        providers: [
-          FChangeNotifierProvider<CanvasMix>.value(
-            value: policy.model,
-          ),
-          FChangeNotifierProvider<PolicySet>.value(
-            value: policy,
-          ),
-          FChangeNotifierProvider<CanvasState>.value(
-            value: policy.state,
-          ),
-          FChangeNotifierProvider.value(
-            value: app,
-          ),
-        ],
-        builder: (context, child) => const DiagramEditorCanvas(),
-      ),
     );
     /*
     return Scaffold(

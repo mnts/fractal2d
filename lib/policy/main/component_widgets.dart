@@ -183,17 +183,6 @@ mixin MyComponentWidgetsPolicy
               componentData.id,
             ),
           ),
-          SizedBox(width: 40),
-          OptionIcon(
-            color: Colors.grey.withOpacity(0.7),
-            iconData: Icons.arrow_right_alt,
-            tooltip: 'connect',
-            size: 40,
-            onPressed: () {
-              isReadyToConnect = true;
-              componentData.updateComponent();
-            },
-          ),
           */
     );
   }
@@ -206,7 +195,18 @@ mixin MyComponentWidgetsPolicy
     return Flex(
       //mainAxisAlignment: MainAxisAlignment.center,
       direction: Axis.horizontal,
-      children: [],
+      children: [
+        OptionIcon(
+          color: Colors.grey.withOpacity(0.7),
+          iconData: Icons.arrow_right_alt,
+          tooltip: 'connect',
+          size: 40,
+          onPressed: () {
+            isReadyToConnect = true;
+            f.updateComponent();
+          },
+        ),
+      ],
     );
   }
 
@@ -251,7 +251,7 @@ mixin MyComponentWidgetsPolicy
             );
           }
           componentData.size.move(newSize);
-          model.updateLinks(componentData);
+          //model.updateLinks(componentData);
         },
         child: MouseRegion(
           cursor: SystemMouseCursors.resizeDownRight,
@@ -293,8 +293,8 @@ mixin MyComponentWidgetsPolicy
             tooltip: 'delete',
             size: 32,
             onPressed: () {
-              model.removeComponent(componentData.id);
-              selectedComponentId = null;
+              model.removeComponent(componentData);
+              selectedComponent = null;
             },
           ),
           SizedBox(width: 8),

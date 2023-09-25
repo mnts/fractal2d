@@ -26,28 +26,45 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
     if (isMultipleSelectionOn) {
       if (multipleSelected.contains(componentId)) {
         removeComponentFromMultipleSelection(componentId);
-        hideComponentHighlight(componentId);
+        hideComponentHighlight(component);
       } else {
-        addComponentToMultipleSelection(componentId);
-        highlightComponent(componentId);
+        addComponentToMultipleSelection(component);
+        highlightComponent(component);
       }
     } else {
       hideAllHighlights();
 
-      if (isReadyToConnect && selectedComponentId != null) {
+      if (isReadyToConnect &&
+          selectedComponent != null &&
+          selectedComponent != component) {
+/*
+    if (model.getComponent(sourceComponentId).connections.any((connection) =>
+        (connection is ConnectionOut) &&
+        (connection.otherComponentId == targetComponentId))) {
+      return false;
+    }
+    */
         isReadyToConnect = false;
-        bool connected = connectComponents(selectedComponentId!, componentId);
-        if (connected) {
+        final link = model.connectTwoComponents(
+          selectedComponent!,
+          component,
+          const LinkStyle(
+            arrowType: ArrowType.pointedArrow,
+            lineWidth: 1.5,
+            backArrowType: ArrowType.centerCircle,
+          ),
+        );
+        if (link != null) {
           print('connected');
-          selectedComponentId = null;
+          selectedComponent = null;
         } else {
           print('not connected');
-          selectedComponentId = componentId;
-          highlightComponent(componentId);
+          selectedComponent = component;
+          highlightComponent(component);
         }
       } else {
-        selectedComponentId = componentId;
-        highlightComponent(componentId);
+        selectedComponent = component;
+        highlightComponent(component);
       }
     }
   }
@@ -55,20 +72,21 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   late Offset lastFocalPoint;
 
   @override
-  onComponentScaleStart(componentId, details) {
+  onComponentScaleStart(ComponentFractal component, details) {
     lastFocalPoint = details.localFocalPoint;
 
     startFocalPosition = details.localFocalPoint.f;
-    startComponentPosition = model.getComponent(componentId).position.value;
+    startComponentPosition = component.position.value;
 
     hideLinkOption();
     if (isMultipleSelectionOn) {
-      addComponentToMultipleSelection(componentId);
-      highlightComponent(componentId);
+      addComponentToMultipleSelection(component);
+      highlightComponent(component);
     }
   }
 
   /*
+  
   @override
   onComponentScaleUpdate(componentId, details) {
     Offset positionDelta = details.localFocalPoint - lastFocalPoint;
@@ -91,41 +109,14 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   }
   */
 
-  bool connectComponents(int sourceComponentId, int targetComponentId) {
-    if (sourceComponentId == 0) {
-      return false;
-    }
-    if (sourceComponentId == targetComponentId) {
-      return false;
-    }
-    if (model.getComponent(sourceComponentId).connections.any((connection) =>
-        (connection is ConnectionOut) &&
-        (connection.otherComponentId == targetComponentId))) {
-      return false;
-    }
-
-    model.connectTwoComponents(
-      sourceComponentId,
-      targetComponentId,
-      const LinkStyle(
-        arrowType: ArrowType.pointedArrow,
-        lineWidth: 1.5,
-        backArrowType: ArrowType.centerCircle,
-      ),
-      MyLinkData(),
-    );
-
-    return true;
-  }
-
   late OffsetF startFocalPosition;
   late OffsetF startComponentPosition;
   Offset lastPositionChange = Offset.zero;
   Movement movement = Movement.topLeft;
 
   @override
-  onComponentLongPress(int componentId) {
-    model.removeComponent(componentId);
+  onComponentLongPress(ComponentFractal component) {
+    //model.removeComponent(component);
   }
 
   @override
@@ -139,7 +130,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           (this as ConstrainsPolicy).constrain(component, newPosition);
     }
 
-    model.setComponentPosition(component, newPosition.f);
+    component.position.move(newPosition.f);
     if (isSnappingEnabled) {
       double finalPosX = newPosition.dx;
       double finalPosY = newPosition.dy;
@@ -223,8 +214,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           break;
       }
 
-      model.setComponentPosition(
-        component,
+      component.position.move(
         OffsetF(
           finalPosX,
           finalPosY,
@@ -235,7 +225,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   }
 
   @override
-  onComponentScaleEnd(int componentId, ScaleEndDetails details) {
+  onComponentScaleEnd(ComponentFractal component, ScaleEndDetails details) {
     /*
     final reposition = OffsetF(
       lastPositionChange.dx,

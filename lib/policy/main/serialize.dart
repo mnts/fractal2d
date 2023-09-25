@@ -7,6 +7,7 @@ mixin CustomPolicy implements PolicySet {
   int? selectedComponentId;
   String serializedDiagram = '{"components": [], "links": []}';
 
+  /*
   highlightComponent(int componentId) {
     model.getComponent(componentId).showHighlight();
     model.getComponent(componentId).updateComponent();
@@ -20,6 +21,7 @@ mixin CustomPolicy implements PolicySet {
       selectedComponentId = null;
     }
   }
+  */
 
   /*
   // Save the diagram to String in json format.

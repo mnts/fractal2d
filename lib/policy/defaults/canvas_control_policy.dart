@@ -5,6 +5,8 @@ import 'package:fractals2d/models/policy.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../main/constrains.dart';
+
 /// Optimized implementation of [CanvasPolicy].
 ///
 /// It enabled pan and zoom of the canvas.
@@ -36,20 +38,23 @@ mixin CanvasControlPolicy on BasePolicySet {
   }
 
   onCanvasScaleStart(ScaleStartDetails details) {
-    _baseScale = state.scale;
-    _basePosition = state.position.value.offset;
+    _baseScale = model.state.scale;
+    _basePosition = model.state.position.offset;
 
     _lastFocalPoint = details.focalPoint;
   }
 
   onCanvasScaleUpdate(ScaleUpdateDetails details) {
     if (!canUpdateCanvasModel) return;
+    if (this is ConstrainsPolicy && state.scale <= state.minScale) return;
     _animationController?.repeat();
     //_updateCanvasModelWithLastValues();
 
     double previousScale = transformScale;
 
-    transformPosition += (details.focalPoint - _lastFocalPoint);
+    final pos = transformPosition + (details.focalPoint - _lastFocalPoint);
+    final nPos = _basePosition + pos;
+    transformPosition = pos;
     transformScale = keepScaleInBounds(details.scale, _baseScale);
 
     var focalPoint = (details.localFocalPoint - transformPosition);
@@ -98,7 +103,7 @@ mixin CanvasControlPolicy on BasePolicySet {
 
       state.updateScale(scaleChange);
 
-      var focalPoint = (event.localPosition.f - state.position.value);
+      var focalPoint = (event.localPosition.f - state.position);
       var focalPointScaled = focalPoint * (state.scale / previousScale);
 
       state.updatePosition(focalPoint - focalPointScaled);

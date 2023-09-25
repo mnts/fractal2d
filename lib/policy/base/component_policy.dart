@@ -6,29 +6,33 @@ import 'package:flutter/gestures.dart';
 mixin ComponentPolicy on BasePolicySet {
   onComponentTap(ComponentFractal componentId) {}
 
-  onComponentTapDown(int componentId, TapDownDetails details) {}
+  onComponentTapDown(ComponentFractal component, TapDownDetails details) {}
 
-  onComponentTapUp(int componentId, TapUpDetails details) {}
+  onComponentTapUp(ComponentFractal component, TapUpDetails details) {}
 
-  onComponentTapCancel(int componentId) {}
+  onComponentTapCancel(ComponentFractal component) {}
 
-  onComponentScaleStart(int componentId, ScaleStartDetails details) {}
+  onComponentScaleStart(
+      ComponentFractal component, ScaleStartDetails details) {}
 
   onComponentScaleUpdate(
       ComponentFractal component, ScaleUpdateDetails details) {}
 
-  onComponentScaleEnd(int componentId, ScaleEndDetails details) {}
+  onComponentScaleEnd(ComponentFractal component, ScaleEndDetails details) {}
 
-  onComponentLongPress(int componentId) {}
+  onComponentLongPress(ComponentFractal component) {}
 
-  onComponentLongPressStart(int componentId, LongPressStartDetails details) {}
+  onComponentLongPressStart(
+      ComponentFractal component, LongPressStartDetails details) {}
 
   onComponentLongPressMoveUpdate(
-      int componentId, LongPressMoveUpdateDetails details) {}
+      ComponentFractal component, LongPressMoveUpdateDetails details) {}
 
-  onComponentLongPressEnd(int componentId, LongPressEndDetails details) {}
+  onComponentLongPressEnd(
+      ComponentFractal component, LongPressEndDetails details) {}
 
-  onComponentLongPressUp(int componentId) {}
+  onComponentLongPressUp(ComponentFractal component) {}
 
-  onComponentPointerSignal(int componentId, PointerSignalEvent event) {}
+  onComponentPointerSignal(
+      ComponentFractal component, PointerSignalEvent event) {}
 }

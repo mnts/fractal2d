@@ -21,7 +21,7 @@ mixin MyCanvasWidgetsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
           painter: GridPainter(
             horizontalGap: gridGap,
             verticalGap: gridGap,
-            offset: state.position.value.offset / state.scale,
+            offset: state.position.offset / state.scale,
             scale: state.scale,
             lineWidth: (state.scale < 1.0) ? state.scale : 1.0,
             matchParentSize: false,
@@ -50,6 +50,7 @@ mixin MyCanvasWidgetsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
     final componentPosition = state.fromCanvasCoordinates(localOffset.f);
     final newComponent = switch (details.data) {
       (ComponentFractal d) => ComponentFractal(
+          to: model,
           position: componentPosition,
           //data: MyComponentFractal.copy(componentData.data),
           size: d.size.value,
@@ -58,6 +59,8 @@ mixin MyCanvasWidgetsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
         ),
       (EventFractal d) => ComponentFractal(
           position: componentPosition,
+
+          to: model,
           //data: MyComponentFractal.copy(componentData.data),
           size: const SizeF(192, 108),
           data: d,
@@ -70,6 +73,6 @@ mixin MyCanvasWidgetsPolicy implements CanvasWidgetsPolicy, CustomStatePolicy {
     newComponent.synch();
     //model.components.add(newComponent);
 
-    model.moveComponentToTheFrontWithChildren(newComponent.id);
+    //model.moveComponentToTheFrontWithChildren(newComponent.id);
   }
 }

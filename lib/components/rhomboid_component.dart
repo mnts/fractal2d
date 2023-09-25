@@ -16,7 +16,8 @@ class RhomboidBody extends StatelessWidget {
     return BaseComponentBody(
       component: component,
       componentPainter: RhomboidPainter(
-        color: component.color.toMaterial,
+        color: Theme.of(context).hintColor,
+//component.color.toMaterial,
         borderColor: component.borderColor.toMaterial,
         borderWidth: component.borderWidth,
       ),

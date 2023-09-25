@@ -12,65 +12,66 @@ import 'package:flutter/material.dart';
 /// Feel free to override other functions from [LinkPolicy] and add them to [PolicySet].
 mixin LinkControlPolicy implements LinkPolicy {
   @override
-  onLinkTapUp(int linkId, TapUpDetails details) {
+  onLinkTapUp(LinkFractal link, TapUpDetails details) {
     model.hideAllLinkJoints();
-    model.showLinkJoints(linkId);
+    link.showJoints();
   }
 
   var _segmentIndex;
 
   @override
-  onLinkScaleStart(int linkId, ScaleStartDetails details) {
+  onLinkScaleStart(LinkFractal link, ScaleStartDetails details) {
     model.hideAllLinkJoints();
-    model.showLinkJoints(linkId);
+    link.showJoints();
     _segmentIndex =
-        model.determineLinkSegmentIndex(linkId, details.localFocalPoint.f);
+        model.determineLinkSegmentIndex(link, details.localFocalPoint.f);
     if (_segmentIndex != null) {
       model.insertLinkMiddlePoint(
-          linkId, details.localFocalPoint.f, _segmentIndex);
-      model.updateLink(linkId);
+          link, details.localFocalPoint.f, _segmentIndex);
+      link.notifyListeners();
     }
   }
 
   @override
-  onLinkScaleUpdate(int linkId, ScaleUpdateDetails details) {
+  onLinkScaleUpdate(LinkFractal link, ScaleUpdateDetails details) {
     if (_segmentIndex != null) {
       model.setLinkMiddlePointPosition(
-        linkId,
+        link,
         details.localFocalPoint.f,
         _segmentIndex,
       );
-      model.updateLink(linkId);
+      link.notifyListeners();
     }
   }
 
   @override
-  onLinkLongPressStart(int linkId, LongPressStartDetails details) {
+  onLinkLongPressStart(LinkFractal link, LongPressStartDetails details) {
     model.hideAllLinkJoints();
-    model.showLinkJoints(linkId);
+    link.showJoints();
     _segmentIndex = model.determineLinkSegmentIndex(
-      linkId,
+      link,
       details.localPosition.f,
     );
     if (_segmentIndex != null) {
       model.insertLinkMiddlePoint(
-        linkId,
+        link,
         details.localPosition.f,
         _segmentIndex,
       );
-      model.updateLink(linkId);
+      link.notifyListeners();
     }
   }
 
   @override
-  onLinkLongPressMoveUpdate(int linkId, LongPressMoveUpdateDetails details) {
+  onLinkLongPressMoveUpdate(
+      LinkFractal link, LongPressMoveUpdateDetails details) {
     if (_segmentIndex != null) {
       model.setLinkMiddlePointPosition(
-        linkId,
+        link,
         details.localPosition.f,
         _segmentIndex,
       );
-      model.updateLink(linkId);
+      link.notifyListeners();
     }
   }
 }

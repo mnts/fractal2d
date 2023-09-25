@@ -26,16 +26,16 @@ mixin CustomStatePolicy implements PolicySet {
     'no_corner_rect',
   ];
 
-  int? selectedComponentId;
+  ComponentFractal? selectedComponent;
 
   bool isMultipleSelectionOn = false;
-  List<int> multipleSelected = [];
+  List<ComponentFractal> multipleSelected = [];
 
   Offset deleteLinkPos = Offset.zero;
 
   bool isReadyToConnect = false;
 
-  int? selectedLinkId;
+  LinkFractal? selectedLink;
   var tapLinkPosition = OffsetF();
 
   hideAllHighlights() {
@@ -44,28 +44,28 @@ mixin CustomStatePolicy implements PolicySet {
     for (final component in model.components) {
       if (component.isHighlightVisible) {
         component.hideHighlight();
-        model.updateComponent(component.id);
+        component.notifyListeners();
       }
     }
   }
 
-  highlightComponent(int componentId) {
-    model.getComponent(componentId).showHighlight();
-    model.getComponent(componentId).updateComponent();
+  highlightComponent(ComponentFractal component) {
+    component.showHighlight();
+    component.notifyListeners();
   }
 
-  hideComponentHighlight(int componentId) {
-    model.getComponent(componentId).hideHighlight();
-    model.getComponent(componentId).updateComponent();
+  hideComponentHighlight(ComponentFractal component) {
+    component.hideHighlight();
+    component.updateComponent();
   }
 
   turnOnMultipleSelection() {
     isMultipleSelectionOn = true;
     isReadyToConnect = false;
 
-    if (selectedComponentId != null) {
-      addComponentToMultipleSelection(selectedComponentId!);
-      selectedComponentId = null;
+    if (selectedComponent != null) {
+      addComponentToMultipleSelection(selectedComponent!);
+      selectedComponent = null;
     }
   }
 
@@ -75,17 +75,15 @@ mixin CustomStatePolicy implements PolicySet {
     hideAllHighlights();
   }
 
-  addComponentToMultipleSelection(int componentId) {
-    if (!multipleSelected.contains(componentId)) {
-      multipleSelected.add(componentId);
-    }
+  addComponentToMultipleSelection(ComponentFractal component) {
+    multipleSelected.add(component);
   }
 
   removeComponentFromMultipleSelection(int componentId) {
     multipleSelected.remove(componentId);
   }
 
-  int duplicate(ComponentFractal componentData) {
+  ComponentFractal duplicate(ComponentFractal componentData) {
     final c = ComponentFractal(
       //type: componentData.type,
       size: componentData.size.value,
@@ -96,16 +94,16 @@ mixin CustomStatePolicy implements PolicySet {
       ),
     );
     c.synch();
-    return c.id;
+    return c;
   }
 
-  showLinkOption(int linkId, OffsetF position) {
-    selectedLinkId = linkId;
+  showLinkOption(LinkFractal link, OffsetF position) {
+    selectedLink = link;
     tapLinkPosition = position;
   }
 
   hideLinkOption() {
-    selectedLinkId = null;
+    selectedLink = null;
   }
 
   //grid
@@ -128,35 +126,31 @@ mixin CustomBehaviourPolicy implements PolicySet, CustomStatePolicy {
   }
 
   removeSelected() {
-    multipleSelected.forEach((compId) {
-      model.removeComponent(compId);
-    });
+    for (var comp in multipleSelected) {
+      model.removeComponent(comp);
+    }
     multipleSelected = [];
   }
 
   duplicateSelected() {
-    List<int> duplicated = [];
-    multipleSelected.forEach((componentId) {
-      int newId = duplicate(model.getComponent(componentId));
-      duplicated.add(newId);
-    });
+    List<ComponentFractal> duplicated = [];
+    for (var component in multipleSelected) {
+      final c = duplicate(component);
+      duplicated.add(c);
+    }
     hideAllHighlights();
     multipleSelected = [];
-    for (var componentId in duplicated) {
-      addComponentToMultipleSelection(componentId);
-      highlightComponent(componentId);
-      model.moveComponentToTheFront(componentId);
+    for (var component in duplicated) {
+      addComponentToMultipleSelection(component);
+      highlightComponent(component);
+      model.moveComponentToTheFront(component);
     }
   }
 
   selectAll() {
-    var components = model.components.map(
-      (c) => c.id,
-    );
-
-    for (var componentId in components) {
-      addComponentToMultipleSelection(componentId);
-      highlightComponent(componentId);
+    for (final component in model.components) {
+      addComponentToMultipleSelection(component);
+      highlightComponent(component);
     }
   }
 }

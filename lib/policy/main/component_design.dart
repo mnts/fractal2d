@@ -1,3 +1,7 @@
+import 'package:app_fractal/app.dart';
+import 'package:fractals2d/mixins/canvas.dart';
+import 'package:signed_fractal/signed_fractal.dart';
+
 import '../base/component_design_policy.dart';
 import '/diagram_editor.dart';
 import 'package:flutter/material.dart';
@@ -6,19 +10,18 @@ mixin MyComponentDesignPolicy implements ComponentDesignPolicy {
   final builders = <String, Widget Function(ComponentFractal)>{};
   @override
   Widget showComponentBody(ComponentFractal d) {
-    if (d.data?.file == null) {
-      return TextBody(component: d);
-    }
     final builder = builders['text' ?? d.type];
     if (builder != null) return builder(d);
-    return switch (d.type) {
+    return switch (d.data) {
       'text' => TextBody(component: d),
       'rect' => RectBody(component: d),
       'round_rect' => RoundRectBody(component: d),
       'oval' => OvalBody(component: d),
-      'crystal' => CrystalBody(component: d),
+      //CanvasFractal c => CrystalBody(component: d),
       'body' => RectBody(component: d),
-      'rhomboid' => RhomboidBody(component: d),
+      //CanvasFractal c => Text('canvas'),
+      CanvasMix c => RhomboidBody(component: d),
+      AppFractal c => RhomboidBody(component: d),
       'bean' => BeanBody(component: d),
       'bean_left' => BeanLeftBody(component: d),
       'bean_right' => BeanRightBody(component: d),

@@ -16,7 +16,7 @@ class CrystalBody extends StatelessWidget {
     return BaseComponentBody(
       component: component,
       componentPainter: CrystalPainter(
-        color: component.color.toMaterial,
+        color: Theme.of(context).hintColor,
         borderColor: component.borderColor.toMaterial,
         borderWidth: component.borderWidth,
       ),

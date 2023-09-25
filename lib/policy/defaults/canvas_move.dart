@@ -37,7 +37,7 @@ mixin CanvasMovePolicy on BasePolicySet implements CanvasControlPolicy {
   }
 
   onCanvasScaleStart(ScaleStartDetails details) {
-    _basePosition = state.position.value;
+    _basePosition = state.position;
 
     _lastFocalPoint = details.focalPoint.f;
   }

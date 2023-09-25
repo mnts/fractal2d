@@ -17,11 +17,11 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomStatePolicy {
   onCanvasTap() {
     multipleSelected = [];
 
-    if (isReadyToConnect && selectedComponentId != null) {
+    if (isReadyToConnect && selectedComponent != null) {
       isReadyToConnect = false;
-      model.updateComponent(selectedComponentId!);
+      selectedComponent!.notifyListeners();
     } else {
-      selectedComponentId = null;
+      selectedComponent = null;
       hideAllHighlights();
     }
   }
@@ -34,9 +34,8 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomStatePolicy {
   putImage(Offset position) async {
     final file = await FractalImage.pick();
     if (file == null) return;
-    try {
-      file.publish();
-    } catch (_) {}
+    file.publish();
+
     final descriptor = await decodeImageFromList(file.bytes);
     final ratio = descriptor.width / descriptor.height;
 

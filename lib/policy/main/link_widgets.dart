@@ -8,6 +8,7 @@ mixin MyLinkWidgetsPolicy implements LinkWidgetsPolicy, CustomStatePolicy {
   @override
   List<Widget> showWidgetsWithLinkData(
       BuildContext context, LinkFractal linkData) {
+    return [];
     double linkLabelSize = 32;
     var linkStartLabelPosition = labelPosition(
       linkData.linkPoints.first,
@@ -25,15 +26,15 @@ mixin MyLinkWidgetsPolicy implements LinkWidgetsPolicy, CustomStatePolicy {
     return [
       label(
         linkStartLabelPosition,
-        linkData.data.startLabel,
+        '', //linkData.data.startLabel,
         linkLabelSize,
       ),
       label(
         linkEndLabelPosition,
-        linkData.data.endLabel,
+        '', //linkData.data.endLabel,
         linkLabelSize,
       ),
-      if (selectedLinkId == linkData.id) showLinkOptions(context, linkData),
+      if (selectedLink == linkData) showLinkOptions(context, linkData),
     ];
   }
 
@@ -46,7 +47,7 @@ mixin MyLinkWidgetsPolicy implements LinkWidgetsPolicy, CustomStatePolicy {
         children: [
           GestureDetector(
             onTap: () {
-              model.removeLink(linkData.id);
+              model.removeLink(linkData);
             },
             child: Container(
               decoration: BoxDecoration(
