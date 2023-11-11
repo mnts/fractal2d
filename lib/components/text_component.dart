@@ -3,11 +3,15 @@ import 'dart:typed_data';
 import 'package:app_fractal/screen.dart';
 import 'package:fractal/data.dart';
 import 'package:fractal2d/diagram_editor.dart';
+import 'package:fractal_flutter/index.dart';
+import 'package:fractal_layout/areas/screens.dart';
+import 'package:fractal_layout/widgets/index.dart';
 import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:flutter/material.dart';
 import 'package:signed_fractal/models/event.dart';
 import 'package:fractal_layout/builders/screen.dart';
+import 'package:signed_fractal/signed_fractal.dart';
 
 class TextBody extends StatefulWidget {
   final ComponentFractal component;
@@ -24,10 +28,8 @@ class TextBody extends StatefulWidget {
 class _TextBodyState extends State<TextBody> {
   ComponentFractal get component => widget.component;
 
-  final _ctrl = TextEditingController();
   @override
   void initState() {
-    _ctrl.text = content;
     checkImage();
     super.initState();
   }
@@ -36,19 +38,20 @@ class _TextBodyState extends State<TextBody> {
   checkImage() {
     if (component.dataHash is! String) return;
     EventFractal.map.request(component.dataHash!).then((d) {
-      d.file?.load().then((bytes) {
-        setState(() {
-          image = DecorationImage(
-            fit: BoxFit.cover,
-            image: MemoryImage(bytes),
-          );
+      if (d case PostFractal _) {
+        d.file?.load().then((bytes) {
+          setState(() {
+            image = DecorationImage(
+              fit: BoxFit.cover,
+              image: MemoryImage(bytes),
+            );
+          });
         });
-      });
+      }
     });
   }
 
   EventFractal? get data => component.data;
-  String get content => data?.content ?? '';
 
   DecorationImage? image;
 
@@ -67,16 +70,32 @@ class _TextBodyState extends State<TextBody> {
           ),
         ],
       ),
+      clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
         vertical: 4,
       ),
-      child: switch (data) {
-        ScreenFractal d => d.build(context),
-        EventFractal() => Center(
-            child: Text(content),
-          ),
-        /*Column(
+      child: Watch<Rewritable?>(
+        component,
+        (ctx, child) => switch (data) {
+          ScreenFractal d => d.build(context),
+          NodeFractal nF => FractalSub(
+              //[nF],
+              buildView: (ev, exp) => switch (ev) {
+                NodeFractal node => ScreensArea(
+                    node: node,
+                    expand: exp,
+                    key: ev.widgetKey(
+                      'nav',
+                    ),
+                  ),
+                _ => Container(),
+              },
+            ),
+          PostFractal f => Center(
+              child: Text(f.content),
+            ),
+          /*Column(
             children: [
               Container(
                 height: 20,
@@ -113,8 +132,11 @@ class _TextBodyState extends State<TextBody> {
               ),
             ],
           ),*/
-        null => null,
-      },
+          _ => Center(
+              child: data?.icon,
+            ),
+        },
+      ),
     );
   }
 }

@@ -43,6 +43,8 @@ dependencies:
     path: '../fractal'
   fractal_flutter:
     path: '../fractal_flutter'
+  fractal_app_flutter:
+    path: '../fractal_app_flutter'
   fractals2d:
     path: '../fractals2d'
   fractal_layout:
@@ -59,6 +61,7 @@ dependencies:
     path: '../signed_fractal'
   color: ^3.0.0
   url_launcher: ^6.1.14
+  super_tooltip: ^2.0.7
 
 dev_dependencies:
   flutter_test:

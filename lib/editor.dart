@@ -1,16 +1,9 @@
-import 'dart:ui';
+import 'package:app_fractal/index.dart';
 import 'package:fractal/types/file.dart';
-import 'package:fractals2d/mixins/canvas.dart';
-import 'package:fractals2d/models/policy.dart';
-import 'package:fractals2d/models/state.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:color/color.dart';
 import 'package:fractal2d/apps/diagram.dart';
-import 'package:fractal_flutter/fractal_flutter.dart';
 import 'package:fractal_layout/layout.dart';
-import 'package:provider/provider.dart';
-import 'policy/base/index.dart';
+import 'home.dart';
 import 'policy/main/set.dart';
 import 'widgets/index.dart';
 import 'package:flutter/material.dart' hide Color;
@@ -30,13 +23,9 @@ class _FractalDiagramState extends State<FractalDiagram> {
   //bool isMiniMapVisible = true;
   //bool isMenuVisible = true;
   //bool isOptionsVisible = true;
+  static final name = 'mant.${FileF.host}';
 
-  final app = DiagramAppFractal(
-    domain: FileF.host,
-    color: const Color.rgb(100, 80, 200),
-    title: FileF.host,
-    name: FileF.host,
-  )..complete();
+  final app = AppFractal.fromDomain(name);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -48,8 +37,9 @@ class _FractalDiagramState extends State<FractalDiagram> {
 
   @override
   Widget build(context) {
-    return FractalLayout<DiagramAppFractal>(
+    return FractalLayout<AppFractal>(
       app,
+      home: const Fractal2dHome(),
       actions: [
         /*
         Tooltip(

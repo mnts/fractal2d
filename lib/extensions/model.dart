@@ -39,8 +39,8 @@ extension CanvasModelWriter on CanvasMix {
   ) {
     return link.determineLinkSegmentIndex(
       tapPosition,
-      state.position,
-      state.scale,
+      cState.position,
+      cState.scale,
     );
   }
 
@@ -333,7 +333,7 @@ extension CanvasModelWriter on CanvasMix {
     */
 
     link.insertMiddlePoint(
-      state.fromCanvasCoordinates(point),
+      cState.fromCanvasCoordinates(point),
       index,
     );
   }
@@ -344,7 +344,7 @@ extension CanvasModelWriter on CanvasMix {
   setLinkMiddlePointPosition(LinkFractal link, OffsetF point, int index) {
     //assert(linkExists(linkId), 'model does not contain this link id: $linkId');
     link.setMiddlePointPosition(
-      state.fromCanvasCoordinates(point),
+      cState.fromCanvasCoordinates(point),
       index,
     );
   }
@@ -356,7 +356,7 @@ extension CanvasModelWriter on CanvasMix {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
 
     getLink(linkId).moveMiddlePoint(
-      offset / state.scale,
+      offset / cState.scale,
       index,
     );
   }
@@ -372,7 +372,7 @@ extension CanvasModelWriter on CanvasMix {
   /// Updates all link's joints position by [offset].
   moveAllLinkMiddlePoints(int linkId, OffsetF position) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
-    getLink(linkId).moveAllMiddlePoints(position / state.scale);
+    getLink(linkId).moveAllMiddlePoints(position / cState.scale);
   }
 }
 

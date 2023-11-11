@@ -1,14 +1,9 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:fractal/lib.dart';
 import 'package:fractal2d/policy/base/canvas_policy.dart';
 import 'package:fractal_flutter/image.dart';
 import 'package:position_fractal/fractals/offset.dart';
-
-import 'package:signed_fractal/models/event.dart';
-
-import '/extensions/model.dart';
+import 'package:signed_fractal/models/index.dart';
 import '/diagram_editor.dart';
 import 'constrains.dart';
 
@@ -49,7 +44,7 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomStatePolicy {
       position.dy - size.height / 2,
     );
 
-    final event = EventFractal(
+    final event = PostFractal(
       content: '',
       file: file,
     );

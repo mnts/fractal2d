@@ -4,6 +4,7 @@ import 'package:fractal_flutter/extensions/index.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:provider/provider.dart';
 import 'package:signed_fractal/models/event.dart';
+import 'package:signed_fractal/models/index.dart';
 
 extension ComponentFractalExt on ComponentFractal {
   Widget build(BuildContext ctx) => switch (data) {
@@ -16,7 +17,7 @@ extension ComponentFractalExt on ComponentFractal {
               },
             ),
           ),
-        EventFractal() => Text(data?.content ?? ''),
-        null => Container(),
+        PostFractal f => Text(f.content),
+        _ => Container(),
       };
 }

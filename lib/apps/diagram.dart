@@ -6,14 +6,9 @@ import 'package:fractal/utils/random.dart';
 import 'package:fractal2d/diagram_editor.dart';
 import 'package:fractal_base/db.dart';
 import 'package:fractal_flutter/index.dart';
-import 'package:fractal_layout/areas/screens.dart';
-import 'package:fractal_layout/builders/index.dart';
 import 'package:fractal_layout/models/index.dart';
-import 'package:fractal2d/builder.dart';
 import 'package:fractals2d/client.dart';
 import 'package:fractals2d/mixins/canvas.dart';
-import 'package:fractals2d/models/canvas.dart';
-
 import '../widgets/default.dart';
 
 class DiagramAppFractal extends AppFractal with CanvasMix {
@@ -24,9 +19,6 @@ class DiagramAppFractal extends AppFractal with CanvasMix {
   static String get socketId => DBF.main['socket'] ??= getRandomString(8);
 
   DiagramAppFractal({
-    required super.domain,
-    required super.color,
-    required super.title,
     required super.name,
   });
 
@@ -41,8 +33,8 @@ class DiagramAppFractal extends AppFractal with CanvasMix {
 
     await Fractals2d.init();
 
-    UIF.map['app'] = UIF.map['canvas'] = UIF(
-      tile: (screen, context) => Text(screen.content),
+    UIF.map['canvas'] = UIF(
+      //tile: (screen, context) => Text(screen.content),
       screen: (screen, context) => DefaultCanvasArea(
         fractal: screen as CanvasMix,
         key: screen.widgetKey('canvas'),

@@ -1,9 +1,11 @@
 import 'package:fractal2d/policy/base/index.dart';
+import 'package:fractal_flutter/fractal_flutter.dart';
 import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:signed_fractal/models/index.dart';
 
 class Component extends StatelessWidget {
   const Component({super.key});
@@ -16,10 +18,10 @@ class Component extends StatelessWidget {
     final policy = Provider.of<PolicySet>(context);
 
     return Positioned(
-      left: c.state.scale * component.position.value.dx + c.state.position.dx,
-      top: c.state.scale * component.position.value.dy + c.state.position.dy,
-      width: c.state.scale * component.size.width,
-      height: c.state.scale * component.size.height,
+      left: c.cState.scale * component.position.value.dx + c.cState.position.dx,
+      top: c.cState.scale * component.position.value.dy + c.cState.position.dy,
+      width: c.cState.scale * component.size.width,
+      height: c.cState.scale * component.size.height,
       child: Listener(
         onPointerSignal: (PointerSignalEvent event) {
           policy.onComponentPointerSignal(component, event);
@@ -37,7 +39,7 @@ class Component extends StatelessWidget {
                   child: Container(
                     transform: Matrix4.identity()
                       ..scale(
-                        c.state.scale,
+                        c.cState.scale,
                       ),
                     child: policy.showComponentBody(component),
                   ),

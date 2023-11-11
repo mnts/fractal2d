@@ -38,8 +38,8 @@ mixin CanvasControlPolicy on BasePolicySet {
   }
 
   onCanvasScaleStart(ScaleStartDetails details) {
-    _baseScale = model.state.scale;
-    _basePosition = model.state.position.offset;
+    _baseScale = model.cState.scale;
+    _basePosition = model.cState.position.offset;
 
     _lastFocalPoint = details.focalPoint;
   }
