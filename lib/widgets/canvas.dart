@@ -6,7 +6,7 @@ import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
 import 'package:fractals2d/models/link_data.dart';
 import 'package:fractals2d/models/state.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' show Provider, Consumer;
 import '../policy/base/policy_set.dart';
 import '../policy/defaults/canvas_control_policy.dart';
 import 'component.dart';

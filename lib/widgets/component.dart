@@ -2,17 +2,16 @@ import 'package:fractal2d/policy/base/index.dart';
 import 'package:fractal_flutter/fractal_flutter.dart';
 import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' show Provider;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:signed_fractal/models/index.dart';
 
 class Component extends StatelessWidget {
   const Component({super.key});
 
   @override
   Widget build(context) {
-    final c = context.watch<CanvasMix>();
+    final c = context.read<CanvasMix>();
 
     final component = Provider.of<ComponentFractal>(context);
     final policy = Provider.of<PolicySet>(context);
