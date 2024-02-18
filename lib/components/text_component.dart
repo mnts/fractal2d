@@ -1,10 +1,12 @@
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:app_fractal/screen.dart';
 import 'package:fractal/data.dart';
 import 'package:fractal2d/diagram_editor.dart';
 import 'package:fractal_flutter/index.dart';
 import 'package:fractal_layout/areas/screens.dart';
+import 'package:fractal_layout/index.dart';
 import 'package:fractal_layout/widgets/index.dart';
 import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
@@ -37,7 +39,7 @@ class _TextBodyState extends State<TextBody> {
   bool loading = false;
   checkImage() {
     if (component.dataHash is! String) return;
-    EventFractal.map.request(component.dataHash!).then((d) {
+    NetworkFractal.request(component.dataHash!).then((d) {
       if (d case PostFractal _) {
         d.file?.load().then((bytes) {
           setState(() {
@@ -57,6 +59,9 @@ class _TextBodyState extends State<TextBody> {
 
   @override
   Widget build(BuildContext context) {
+    final pad = EdgeInsets.only(
+      top: 48,
+    );
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade200.withOpacity(0.5),
@@ -71,31 +76,33 @@ class _TextBodyState extends State<TextBody> {
         ],
       ),
       clipBehavior: Clip.hardEdge,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
-      child: Watch<Rewritable?>(
-        component,
-        (ctx, child) => switch (data) {
-          ScreenFractal d => d.build(context),
-          NodeFractal nF => FractalSub(
-              //[nF],
-              buildView: (ev, exp) => switch (ev) {
-                NodeFractal node => ScreensArea(
-                    node: node,
-                    expand: exp,
-                    key: ev.widgetKey(
-                      'nav',
-                    ),
+      padding: const EdgeInsets.symmetric(),
+      child: Stack(
+        children: [
+          Watch<Rewritable?>(
+            component,
+            (ctx, child) => switch (data) {
+              ScreenFractal d => DocumentArea(
+                  d,
+                  padding: const EdgeInsets.only(
+                    top: 48,
+                    left: 8,
+                    right: 8,
+                    bottom: 48,
                   ),
-                _ => Container(),
-              },
-            ),
-          PostFractal f => Center(
-              child: Text(f.content),
-            ),
-          /*Column(
+                ),
+              CatalogFractal f => FGridArea(f, padding: pad),
+              NodeFractal nF => ScreensArea(
+                  node: nF,
+                  key: nF.widgetKey(
+                    'nav',
+                  ),
+                  padding: pad,
+                ),
+              PostFractal f => Center(
+                  child: Text(f.content),
+                ),
+              /*Column(
             children: [
               Container(
                 height: 20,
@@ -132,10 +139,45 @@ class _TextBodyState extends State<TextBody> {
               ),
             ],
           ),*/
-          _ => Center(
-              child: data?.icon,
+              _ => Center(
+                  child: data?.icon,
+                ),
+            },
+          ),
+          if (data case NodeFractal node)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: FractalScaffoldState.active.color,
+                height: 48,
+                //backgroundColor: widget.fractal.skin.color.toMaterial,
+
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 3, sigmaY: 2),
+                    child: Row(children: [
+                      SizedBox.square(
+                        dimension: 42,
+                        child: FIcon(node, color: Colors.white),
+                      ),
+                      Expanded(
+                        child: FTitle(node,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      )
+                    ]),
+                  ),
+                ),
+              ),
             ),
-        },
+        ],
       ),
     );
   }

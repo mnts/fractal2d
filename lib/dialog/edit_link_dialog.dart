@@ -348,10 +348,12 @@ void showEditLinkDialog(BuildContext context, LinkFractal linkData) {
                         onTap: () async {
                           var pickedColor =
                               // showPickColorDialog(context, linkData);
+                              /*
                               showPickColorDialog(
                                   context, color, 'Pick a line color');
-                          color = await pickedColor;
-                          setState(() {});
+                              color = await pickedColor;
+                                */
+                              setState(() {});
                         },
                         child: Container(
                           width: 40,

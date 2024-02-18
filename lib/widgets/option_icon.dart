@@ -33,7 +33,6 @@ class OptionIcon extends StatelessWidget {
       ),
       child: IconButton(
         tooltip: tooltip,
-        color: color,
         onPressed: () {
           if (onPressed != null) {
             onPressed();

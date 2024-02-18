@@ -21,7 +21,6 @@ export 'package:fractals2d/extensions/component.dart';
 export 'extensions/link_data.dart';
 export 'extensions/model.dart';
 export 'extensions/position.dart';
-export 'main.dart';
 export 'dialog/edit_component_dialog.dart';
 export 'dialog/edit_link_dialog.dart';
 export 'dialog/pick_color_dialog.dart';

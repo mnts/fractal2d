@@ -55,15 +55,16 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     zOrderedComponents.sort((a, b) => a.zOrder.compareTo(b.zOrder));
 
     return [
-      ...zOrderedComponents.map(
-        (componentData) => FChangeNotifierProvider<ComponentFractal>.value(
+      ...zOrderedComponents.map((componentData) {
+        componentData.preload();
+        return FChangeNotifierProvider<ComponentFractal>.value(
           key: Key('FCNP_${componentData.path}'),
           value: componentData,
           child: Component(
             key: componentData.widgetKey('canvas'),
           ),
-        ),
-      ),
+        );
+      }),
     ];
   }
 

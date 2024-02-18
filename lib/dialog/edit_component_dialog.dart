@@ -96,6 +96,7 @@ void showEditComponentDialog(
                   ),
                 ],
               ),
+              /*
               SizedBox(height: 16),
               Row(
                 children: [
@@ -153,6 +154,7 @@ void showEditComponentDialog(
                   ),
                 ],
               ),
+              */
               SizedBox(height: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

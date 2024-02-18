@@ -12,11 +12,13 @@ import 'package:fractals2d/mixins/canvas.dart';
 import '../widgets/default.dart';
 
 class DiagramAppFractal extends AppFractal with CanvasMix {
+  /*
   final socket = Fractal2dClient(
     name: socketId,
   )..connect();
 
   static String get socketId => DBF.main['socket'] ??= getRandomString(8);
+  */
 
   DiagramAppFractal({
     required super.name,
@@ -29,8 +31,6 @@ class DiagramAppFractal extends AppFractal with CanvasMix {
   }
 
   static Future<void> prepare() async {
-    await DBF.initiate();
-
     await Fractals2d.init();
 
     UIF.map['canvas'] = UIF(

@@ -1,8 +1,11 @@
 import 'dart:math';
+import 'package:app_fractal/index.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fractal2d/lib.dart';
 import 'package:fractal2d/policy/base/component_widgets_policy.dart';
 import 'package:fractal2d/policy/main/constrains.dart';
+import 'package:fractal_layout/index.dart';
+import 'package:fractals2d/mixins/canvas.dart';
 import 'package:position_fractal/fractals/offset.dart';
 import '/diagram_editor.dart';
 import 'package:flutter/material.dart';
@@ -196,16 +199,49 @@ mixin MyComponentWidgetsPolicy
       //mainAxisAlignment: MainAxisAlignment.center,
       direction: Axis.horizontal,
       children: [
-        OptionIcon(
-          color: Colors.grey.withOpacity(0.7),
-          iconData: Icons.arrow_right_alt,
+        IconButton.filled(
+          icon: const Icon(Icons.check),
+          tooltip: 'submit',
+          onPressed: () {
+            f.submit();
+          },
+        ),
+        IconButton.filled(
+          icon: const Icon(Icons.arrow_right_alt),
           tooltip: 'connect',
-          size: 40,
           onPressed: () {
             isReadyToConnect = true;
             f.updateComponent();
           },
         ),
+        IconButton.filled(
+          icon: const Icon(Icons.settings),
+          tooltip: 'setup',
+          onPressed: () {
+            ConfigFArea.dialog(f);
+          },
+        ),
+        IconButton.filled(
+          icon: const Icon(Icons.delete_forever),
+          tooltip: 'delete',
+          onPressed: () {
+            f.remove();
+            if (f.to case CanvasMix c) {
+              c.removeComponent(f);
+            }
+          },
+        ),
+        Expanded(
+          child: Container(),
+        ),
+        if (f.data case NodeFractal node)
+          IconButton.filled(
+            icon: const Icon(Icons.screen_share_outlined),
+            tooltip: 'navigate',
+            onPressed: () {
+              FractalLayoutState.active.go(node);
+            },
+          ),
       ],
     );
   }
