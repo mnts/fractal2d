@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fractal/c.dart';
 import 'package:fractal2d/lib.dart';
+import 'package:fractal_flutter/app.dart';
 import 'package:fractal_layout/index.dart';
 import 'package:fractal_layout/models/ui.dart';
 import 'package:fractal_layout/routes/index.dart' as Routes;
@@ -20,8 +21,9 @@ void main() async {
   FileF.isSecure = true;
   FileF.host =
       (kIsWeb && Uri.base.host != 'localhost') ? Uri.base.host : 'ego.bio';
-  final d = FileF.host.split('.');
-  FileF.main = '${d[0]}.${d[1]}';
+
+  final d = [...FileF.host.split('.').reversed];
+  FileF.main = d.length == 1 ? d[0] : '${d[1]}.${d[0]}';
 
   //AppWallF.provider = Provider<NftMillionApp>((ref) => NftMillionApp(ref));
   //FileF.path = '';
@@ -37,39 +39,43 @@ void main() async {
   await AppFractal.init();
   await DiagramAppFractal.prepare();
 
+  NetworkFractal.active = NetworkFractal.fromMap({
+    'name': FileF.host,
+    'createdAt': 2,
+    'pubkey': '',
+  })
+    ..synch()
+    ..preload();
+
   Fractal.maps['screens'] = UIF.map;
   FractalC.options['tiles'] = FractalTile.options;
 
   //runServer(8810);
 
-  ClientFractal.main = ClientFractal(
-    from: DeviceFractal.my,
-    to: network,
-  )..establish();
-
   final app = AppFractal.active = AppFractal.fromDomain(FileF.host);
 
   runApp(
-    FractalLayout(
-      app,
-      title: const Text('fractal'),
-      routes: [
-        GoRoute(
-          path: '/_logs',
-          builder: (context, state) => FractalScaffold(
-            body: FScreen(
-              StreamArea(
-                fractal: CatalogFractal(
-                  filter: {},
-                  source: WriterFractal.controller,
-                  limit: 200,
+    FractalApp(
+      child: FractalLayout(
+        app,
+        title: const Text('fractal'),
+        routes: [
+          GoRoute(
+            path: '/_logs',
+            builder: (context, state) => FractalScaffold(
+              body: FScreen(
+                StreamArea(
+                  fractal: CatalogFractal(
+                    filter: {},
+                    source: WriterFractal.controller,
+                    limit: 200,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Routes.hashRoute,
-        /*
+          Routes.hashRoute,
+          /*
         GoRoute(
           path: '/@:name',
           builder: (context, state) {
@@ -82,7 +88,8 @@ void main() async {
           },
         ),
         */
-      ],
+        ],
+      ),
     ),
   );
 }
