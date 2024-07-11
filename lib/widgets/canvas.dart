@@ -28,6 +28,11 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     with TickerProviderStateMixin {
   PolicySet? withControlPolicy;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   bool ready = false;
   void init() {
     if (ready) return;
@@ -51,12 +56,12 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
   }
 
   List<Widget> showComponents(CanvasMix canvasModel) {
-    var zOrderedComponents = canvasModel.components.toList();
+    var zOrderedComponents = canvasModel.components.list;
     zOrderedComponents.sort((a, b) => a.zOrder.compareTo(b.zOrder));
 
     return [
       ...zOrderedComponents.map((componentData) {
-        componentData.preload();
+        //componentData.preload();
         return FChangeNotifierProvider<ComponentFractal>.value(
           key: Key('FCNP_${componentData.path}'),
           value: componentData,
@@ -70,7 +75,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
 
   List<Widget> showLinks(CanvasMix canvasModel) {
     return [
-      for (final link in canvasModel.links)
+      for (final link in canvasModel.links.list)
         if (link.linkPoints.length > 1)
           FChangeNotifierProvider<LinkFractal>.value(
             value: link,
@@ -83,7 +88,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
   }
 
   List<Widget> showOtherWithComponentFractalUnder(CanvasMix canvasModel) {
-    return canvasModel.components.map((ComponentFractal componentData) {
+    return canvasModel.components.list.map((ComponentFractal componentData) {
       return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
@@ -99,7 +104,7 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
   }
 
   List<Widget> showOtherWithComponentFractalOver(CanvasMix canvasModel) {
-    return canvasModel.components.map((ComponentFractal componentData) {
+    return canvasModel.components.list.map((ComponentFractal componentData) {
       return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
@@ -123,18 +128,21 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
   }
 
   Widget canvasStack(CanvasMix canvasModel) {
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: [
-        ...showBackgroundWidgets(),
-        ...showOtherWithComponentFractalUnder(canvasModel),
-        ...showComponents(canvasModel),
-        ...showLinks(canvasModel),
-        ...showOtherWithComponentFractalOver(canvasModel),
-        ...showForegroundWidgets(),
-        //if (app.position.x != 0 || app.position.y != 0) OptionsArea()
-      ],
+    return Listen(
+      canvasModel.components,
+      (ctx, child) => Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          ...showBackgroundWidgets(),
+          ...showOtherWithComponentFractalUnder(canvasModel),
+          ...showComponents(canvasModel),
+          ...showLinks(canvasModel),
+          ...showOtherWithComponentFractalOver(canvasModel),
+          ...showForegroundWidgets(),
+          //if (app.position.x != 0 || app.position.y != 0) OptionsArea()
+        ],
+      ),
     );
   }
 

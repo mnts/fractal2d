@@ -293,12 +293,12 @@ extension CanvasModelWriter on CanvasMix {
   /// Makes all link's joints invisible.
   hideLinkJoints(int linkId) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
-    getLink(linkId).hideJoints();
+    getLink(linkId)?.hideJoints();
   }
 
   /// Makes invisible all link joints on the canvas.
   hideAllLinkJoints() {
-    for (var link in links) {
+    for (var link in links.list) {
       link.hideJoints();
     }
   }
@@ -355,7 +355,7 @@ extension CanvasModelWriter on CanvasMix {
   moveLinkMiddlePoint(int linkId, OffsetF offset, int index) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
 
-    getLink(linkId).moveMiddlePoint(
+    getLink(linkId)?.moveMiddlePoint(
       offset / cState.scale,
       index,
     );
@@ -372,7 +372,7 @@ extension CanvasModelWriter on CanvasMix {
   /// Updates all link's joints position by [offset].
   moveAllLinkMiddlePoints(int linkId, OffsetF position) {
     assert(linkExists(linkId), 'model does not contain this link id: $linkId');
-    getLink(linkId).moveAllMiddlePoints(position / cState.scale);
+    getLink(linkId)?.moveAllMiddlePoints(position / cState.scale);
   }
 }
 

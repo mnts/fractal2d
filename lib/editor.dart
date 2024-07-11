@@ -1,9 +1,5 @@
 import 'package:app_fractal/index.dart';
-import 'package:fractal/types/file.dart';
-import 'package:color/color.dart';
-import 'package:fractal2d/apps/diagram.dart';
 import 'package:fractal_layout/layout.dart';
-import 'home.dart';
 import 'policy/main/set.dart';
 import 'widgets/index.dart';
 import 'package:flutter/material.dart' hide Color;
@@ -39,7 +35,6 @@ class _FractalDiagramState extends State<FractalDiagram> {
   Widget build(context) {
     return FractalLayout<AppFractal>(
       app,
-      home: const Fractal2dHome(),
       actions: [
         /*
         Tooltip(
@@ -140,21 +135,21 @@ to discuss cooperation""",
         ),
         IconButton(
           tooltip: 'select all',
-          icon: Icon(
+          icon: const Icon(
             Icons.all_inclusive,
           ),
           onPressed: () => myPolicySet.selectAll(),
         ),
         IconButton(
           tooltip: 'duplicate selected',
-          icon: Icon(
+          icon: const Icon(
             Icons.copy,
           ),
           onPressed: () => myPolicySet.duplicateSelected(),
         ),
         IconButton(
           tooltip: 'remove selected',
-          icon: Icon(
+          icon: const Icon(
             Icons.delete,
           ),
           onPressed: () => myPolicySet.removeSelected(),

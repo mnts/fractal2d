@@ -59,6 +59,8 @@ dependencies:
   url_launcher: ^6.1.14
   super_tooltip: ^2.0.7
   go_router: ^14.1.2
+  currency_fractal:
+    path: '../../pub/currency_fractal'
   syncfusion_flutter_datepicker: ^24.2.9
 
 dev_dependencies:

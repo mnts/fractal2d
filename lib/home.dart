@@ -16,7 +16,7 @@ class _Fractal2dHomeState extends State<Fractal2dHome> {
   @override
   Widget build(BuildContext context) {
     final app = context.read<AppFractal>();
-    return app.toHash == null
+    return app.to == null
         ? Container(
             padding: EdgeInsets.all(8),
             child: ListView(children: [

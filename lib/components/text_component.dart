@@ -32,36 +32,30 @@ class _TextBodyState extends State<TextBody> {
 
   @override
   void initState() {
+    component.preload();
     checkImage();
     super.initState();
   }
 
   bool loading = false;
-  checkImage() {
-    if (component.dataHash is! String) return;
-    NetworkFractal.request(component.dataHash!).then((d) {
-      if (d case PostFractal _) {
-        d.file?.load().then((bytes) {
-          setState(() {
-            image = DecorationImage(
-              fit: BoxFit.cover,
-              image: MemoryImage(bytes),
-            );
-          });
+  checkImage() async {
+    final d = await widget.component.data?.future;
+    if (d case PostFractal post) {
+      post.file?.load().then((bytes) {
+        setState(() {
+          image = DecorationImage(
+            fit: BoxFit.cover,
+            image: MemoryImage(bytes),
+          );
         });
-      }
-    });
+      });
+    }
   }
-
-  EventFractal? get data => component.data;
 
   DecorationImage? image;
 
   @override
   Widget build(BuildContext context) {
-    final pad = EdgeInsets.only(
-      top: 48,
-    );
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade200.withOpacity(0.5),
@@ -77,32 +71,46 @@ class _TextBodyState extends State<TextBody> {
       ),
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(),
-      child: Stack(
-        children: [
-          Watch<Rewritable?>(
-            component,
-            (ctx, child) => switch (data) {
-              ScreenFractal d => DocumentArea(
-                  d,
-                  padding: const EdgeInsets.only(
-                    top: 48,
-                    left: 8,
-                    right: 8,
-                    bottom: 48,
-                  ),
-                ),
-              CatalogFractal f => FGridArea(f, padding: pad),
-              NodeFractal nF => ScreensArea(
-                  node: nF,
-                  key: nF.widgetKey(
-                    'nav',
-                  ),
-                  padding: pad,
-                ),
-              PostFractal f => Center(
-                  child: Text(f.content),
-                ),
-              /*Column(
+      child: Stack(children: [
+        Watch<Rewritable?>(
+          component,
+          (ctx, child) => component.data != null
+              ? FRL(component.data, displayData)
+              : SizedBox(),
+        ),
+      ]),
+    );
+  }
+
+  final pad = const EdgeInsets.only(
+    top: 48,
+  );
+
+  Widget displayData(EventFractal data) {
+    return switch (data) {
+      ScreenFractal d => DocumentArea(
+          d,
+          padding: const EdgeInsets.only(
+            top: 48,
+            left: 8,
+            right: 8,
+            bottom: 48,
+          ),
+        ),
+      CatalogFractal f => FGridArea(
+          [f],
+          padding: pad,
+        ),
+      NodeFractal nF => ScreensArea(
+          node: nF,
+          key: nF.widgetKey(
+            'nav',
+          ),
+        ),
+      PostFractal f => Center(
+          child: Text(f.content),
+        ),
+      /*Column(
             children: [
               Container(
                 height: 20,
@@ -139,46 +147,41 @@ class _TextBodyState extends State<TextBody> {
               ),
             ],
           ),*/
-              _ => Center(
-                  child: data?.icon,
-                ),
-            },
-          ),
-          if (data case NodeFractal node)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                color: FractalScaffoldState.active.color,
-                height: 48,
-                //backgroundColor: widget.fractal.skin.color.toMaterial,
+      NodeFractal node => Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            color: FractalScaffoldState.active.color,
+            height: 48,
+            //backgroundColor: widget.fractal.skin.color.toMaterial,
 
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 3, sigmaY: 2),
-                    child: Row(children: [
-                      SizedBox.square(
-                        dimension: 42,
-                        child: FIcon(node, color: Colors.white),
-                      ),
-                      Expanded(
-                        child: FTitle(node,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      )
-                    ]),
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 2),
+                child: Row(children: [
+                  SizedBox.square(
+                    dimension: 42,
+                    child: FIcon(node, color: Colors.white),
                   ),
-                ),
+                  Expanded(
+                    child: FTitle(node,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  )
+                ]),
               ),
             ),
-        ],
-      ),
-    );
+          ),
+        ),
+      _ => Center(
+          child: data.icon,
+        ),
+    };
   }
 }

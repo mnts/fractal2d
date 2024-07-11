@@ -18,7 +18,7 @@ class _DefaultCanvasAreaState extends State<DefaultCanvasArea> {
   late final policy = MyPolicySet(widget.fractal);
   @override
   void initState() {
-    widget.fractal.preload();
+    widget.fractal.preload('node');
     super.initState();
   }
 

@@ -41,7 +41,7 @@ mixin CustomStatePolicy implements PolicySet {
   hideAllHighlights() {
     model.hideAllLinkJoints();
     hideLinkOption();
-    for (final component in model.components) {
+    for (final component in model.components.list) {
       if (component.isHighlightVisible) {
         component.hideHighlight();
         component.notifyListeners();
@@ -87,7 +87,7 @@ mixin CustomStatePolicy implements PolicySet {
     final c = ComponentFractal(
       //type: componentData.type,
       size: componentData.size.value,
-      data: componentData.data,
+      data: componentData.data?.value,
       position: OffsetF(
         componentData.position.x + 20,
         componentData.position.y + 20,
@@ -148,7 +148,7 @@ mixin CustomBehaviourPolicy implements PolicySet, CustomStatePolicy {
   }
 
   selectAll() {
-    for (final component in model.components) {
+    for (final component in model.components.list) {
       addComponentToMultipleSelection(component);
       highlightComponent(component);
     }
