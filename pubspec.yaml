@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,15 +32,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   provider: ^6.1.1
-  file_picker: ^6.1.1
+  file_picker: ^8.0.1
   frac:
     path: '../frac'
   fractal:
     path: '../fractal'
   fractal_flutter:
     path: '../fractal_flutter'
-  fractal_app_flutter:
-    path: '../fractal_app_flutter'
   fractals2d:
     path: '../fractals2d'
   fractal_layout:
@@ -61,7 +59,7 @@ dependencies:
   go_router: ^14.1.2
   currency_fractal:
     path: '../../pub/currency_fractal'
-  syncfusion_flutter_datepicker: ^24.2.9
+  syncfusion_flutter_datepicker: ^26.2.5
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +70,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -83,7 +81,6 @@ flutter:
     - assets/
     - assets/icons/
     - assets/tiles/
-    - assets/images/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

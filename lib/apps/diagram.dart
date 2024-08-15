@@ -37,34 +37,39 @@ class DiagramAppFractal extends AppFractal with CanvasMix {
   static Future<bool> prepare() async {
     await Fractals2d.init();
 
+    final canvasUI = UIF<CanvasFractal>('canvas');
+
     var name = (await DBF.main.getVar('device'));
     if (name == null) {
       name = getRandomString(8);
       await DBF.main.setVar('device', name);
     }
 
-    NetworkFractal.active = await NetworkFractal.controller.put({
+    final map = EventFractal.map.map;
+
+    map['network'] =
+        NetworkFractal.active = await NetworkFractal.controller.put({
       'name': FileF.host,
       'createdAt': 2,
       'pubkey': '',
     });
 
-    DeviceFractal.my = await DeviceFractal.controller.put({
+    map['device'] = DeviceFractal.my = await DeviceFractal.controller.put({
       'name': name,
       'createdAt': 0,
       'pubkey': '',
     })
       ..synch();
 
-    AppFractal.main = (await AppFractal.controller.put({
+    map['app'] = AppFractal.main = await AppFractal.controller.put({
       'name': FileF.main,
       'createdAt': 2,
       'owner': '',
-    }));
+    });
 
-    UIF.map['canvas'] = (f) => FractalAreaWidget(
+    canvasUI.builders[''] = (f) => FractalAreaWidget(
           f,
-          (ctx) => DefaultCanvasArea(
+          () => DefaultCanvasArea(
             fractal: f as CanvasMix,
             key: f.widgetKey('canvas'),
           ),

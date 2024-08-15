@@ -7,6 +7,7 @@ import 'package:fractal2d/diagram_editor.dart';
 import 'package:fractal_flutter/index.dart';
 import 'package:fractal_layout/areas/screens.dart';
 import 'package:fractal_layout/index.dart';
+import 'package:fractal_layout/views/index.dart';
 import 'package:fractal_layout/widgets/index.dart';
 import 'package:fractals2d/mixins/canvas.dart';
 import 'package:fractals2d/models/component.dart';
@@ -88,25 +89,6 @@ class _TextBodyState extends State<TextBody> {
 
   Widget displayData(EventFractal data) {
     return switch (data) {
-      ScreenFractal d => DocumentArea(
-          d,
-          padding: const EdgeInsets.only(
-            top: 48,
-            left: 8,
-            right: 8,
-            bottom: 48,
-          ),
-        ),
-      CatalogFractal f => FGridArea(
-          [f],
-          padding: pad,
-        ),
-      NodeFractal nF => ScreensArea(
-          node: nF,
-          key: nF.widgetKey(
-            'nav',
-          ),
-        ),
       PostFractal f => Center(
           child: Text(f.content),
         ),
@@ -147,37 +129,8 @@ class _TextBodyState extends State<TextBody> {
               ),
             ],
           ),*/
-      NodeFractal node => Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            color: FractalScaffoldState.active.color,
-            height: 48,
-            //backgroundColor: widget.fractal.skin.color.toMaterial,
-
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 2),
-                child: Row(children: [
-                  SizedBox.square(
-                    dimension: 42,
-                    child: FIcon(node, color: Colors.white),
-                  ),
-                  Expanded(
-                    child: FTitle(node,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        )),
-                  )
-                ]),
-              ),
-            ),
-          ),
+      NodeFractal node => FractalLayer(
+          child: FractalThing(node),
         ),
       _ => Center(
           child: data.icon,

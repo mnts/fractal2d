@@ -3,7 +3,6 @@ import 'package:currency_fractal/fractals/transaction.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fractal2d/lib.dart';
-import 'package:fractal_flutter/app.dart';
 import 'package:fractal_flutter/index.dart';
 import 'package:fractal_layout/index.dart';
 import 'package:fractal_layout/routes/index.dart' as routes;
@@ -18,7 +17,7 @@ void main() async {
   FileF.host = ((kIsWeb && Uri.base.host != 'localhost')
           ? Uri.base.host
           : FileF.isSecure
-              ? 'ego.bio'
+              ? 'fractal.bond'
               : 'localhost:2415')
       .replaceFirst('.beta', '');
 
@@ -27,6 +26,7 @@ void main() async {
 
   AppFractal.defaultOnlyAuthorized = false;
   AppFractal.defaultColor = const Color.rgb(100, 45, 155);
+  AppFractal.defaultColor = const Color.rgb(67, 120, 190);
   //AppWallF.provider = Provider<NftMillionApp>((ref) => NftMillionApp(ref));
   //FileF.path = '';
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,17 +39,17 @@ void main() async {
 
   await SignedFractal.init();
   await AppFractal.init();
-  await DiagramAppFractal.prepare();
   await TransactionFractal.controller.init();
+  await DiagramAppFractal.prepare();
+
+  AppFractal.active = AppFractal.fromDomain(FileF.host);
 
   UIF.init();
 
   //runServer(8810);
 
-  AppFractal.active = AppFractal.fromDomain(FileF.host);
-
   runApp(
-    FractalApp(
+    FractalSystem(
       child: FractalLayout(
         AppFractal.active,
         title: const Text('fractal'),
