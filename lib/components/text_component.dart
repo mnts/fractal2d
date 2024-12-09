@@ -41,7 +41,7 @@ class _TextBodyState extends State<TextBody> {
   bool loading = false;
   checkImage() async {
     final d = await widget.component.data?.future;
-    if (d case PostFractal post) {
+    if (d case EventFractal post when post.kind == 3) {
       post.file?.load().then((bytes) {
         setState(() {
           image = DecorationImage(
@@ -89,8 +89,8 @@ class _TextBodyState extends State<TextBody> {
 
   Widget displayData(EventFractal data) {
     return switch (data) {
-      PostFractal f => Center(
-          child: Text(f.content),
+      EventFractal f => Center(
+          child: Text(f.display),
         ),
       /*Column(
             children: [

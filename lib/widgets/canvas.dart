@@ -16,7 +16,9 @@ import 'package:flutter/material.dart';
 
 class DiagramEditorCanvas extends StatefulWidget {
   /// The canvas where all components and links are shown on.
-  const DiagramEditorCanvas({
+  final PolicySet policy;
+  const DiagramEditorCanvas(
+    this.policy, {
     super.key,
   });
 
@@ -30,12 +32,16 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
 
   @override
   void initState() {
+    init();
+    widget.policy.model.addListener(refresh);
     super.initState();
   }
 
-  bool ready = false;
+  refresh() {
+    setState(() {});
+  }
+
   void init() {
-    if (ready) return;
     withControlPolicy =
         (policy is CanvasControlPolicy || policy is CanvasMovePolicy)
             ? policy
@@ -55,40 +61,32 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     super.dispose();
   }
 
-  List<Widget> showComponents(CanvasMix canvasModel) {
-    var zOrderedComponents = canvasModel.components.list;
-    zOrderedComponents.sort((a, b) => a.zOrder.compareTo(b.zOrder));
+  List<Widget> showComponents() {
+    var zOrderedComponents = policy.model.components.list;
+    //zOrderedComponents.sort((a, b) => a.zOrder.compareTo(b.zOrder));
 
     return [
       ...zOrderedComponents.map((componentData) {
         //componentData.preload();
-        return FChangeNotifierProvider<ComponentFractal>.value(
-          key: Key('FCNP_${componentData.path}'),
-          value: componentData,
-          child: Component(
-            key: componentData.widgetKey('canvas'),
-          ),
+        return Component(
+          componentData,
+          key: componentData.widgetKey('canvas'),
         );
       }),
     ];
   }
 
-  List<Widget> showLinks(CanvasMix canvasModel) {
-    return [
-      for (final link in canvasModel.links.list)
-        if (link.linkPoints.length > 1)
-          FChangeNotifierProvider<LinkFractal>.value(
-            value: link,
-            key: Key('Link_${link.path}'),
-            child: Link(
+  List<Widget> showLinks() => [
+        for (final link in policy.model.links.list)
+          if (link.linkPoints.length > 1)
+            Link(
+              link,
               key: link.widgetKey('canvas'),
-            ),
-          )
-    ];
-  }
+            )
+      ];
 
-  List<Widget> showOtherWithComponentFractalUnder(CanvasMix canvasModel) {
-    return canvasModel.components.list.map((ComponentFractal componentData) {
+  List<Widget> showOtherWithComponentFractalUnder() {
+    return policy.model.components.list.map((ComponentFractal componentData) {
       return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
@@ -103,8 +101,8 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     }).toList();
   }
 
-  List<Widget> showOtherWithComponentFractalOver(CanvasMix canvasModel) {
-    return canvasModel.components.list.map((ComponentFractal componentData) {
+  List<Widget> showOtherWithComponentFractalOver() {
+    return policy.model.components.list.map((ComponentFractal componentData) {
       return FChangeNotifierProvider<ComponentFractal>.value(
         value: componentData,
         builder: (context, child) {
@@ -127,18 +125,18 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     return policy.showCustomWidgetsOnCanvasForeground(context);
   }
 
-  Widget canvasStack(CanvasMix canvasModel) {
+  Widget stack() {
     return Listen(
-      canvasModel.components,
+      policy.model.components,
       (ctx, child) => Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
           ...showBackgroundWidgets(),
-          ...showOtherWithComponentFractalUnder(canvasModel),
-          ...showComponents(canvasModel),
-          ...showLinks(canvasModel),
-          ...showOtherWithComponentFractalOver(canvasModel),
+          ...showOtherWithComponentFractalUnder(),
+          ...showComponents(),
+          ...showLinks(),
+          ...showOtherWithComponentFractalOver(),
           ...showForegroundWidgets(),
           //if (app.position.x != 0 || app.position.y != 0) OptionsArea()
         ],
@@ -146,62 +144,58 @@ class _DiagramEditorCanvasState extends State<DiagramEditorCanvas>
     );
   }
 
-  Widget canvasAnimated(CanvasMix canvasModel) {
-    return AnimatedBuilder(
-      animation:
-          (withControlPolicy as CanvasControlPolicy).getAnimationController(),
-      builder: (BuildContext context, Widget? child) {
-        (withControlPolicy as CanvasControlPolicy).canUpdateCanvasModel = true;
-        return Transform(
-          transform: Matrix4.identity()
-            ..translate(
-                (withControlPolicy as CanvasControlPolicy).transformPosition.dx,
-                (withControlPolicy as CanvasControlPolicy).transformPosition.dy)
-            ..scale((withControlPolicy as CanvasControlPolicy).transformScale),
-          child: child,
-        );
-      },
-      child: canvasStack(canvasModel),
-    );
+  Widget canvas() {
+    if (withControlPolicy case CanvasControlPolicy cp) {
+      return AnimatedBuilder(
+        animation: cp.getAnimationController(),
+        builder: (BuildContext context, Widget? child) {
+          cp.canUpdateCanvasModel = true;
+
+          return Transform(
+            transform: Matrix4.identity()
+              ..translate(cp.transformPosition.dx, cp.transformPosition.dy)
+              ..scale(cp.transformScale),
+            child: stack(),
+          );
+
+          //child: child,
+        },
+      );
+    } else {
+      return stack();
+    }
   }
 
   static GlobalKey canvasGlobalKey = GlobalKey();
 
-  late PolicySet policy;
+  PolicySet get policy => widget.policy;
 
   @override
   Widget build(BuildContext context) {
-    policy = context.read<PolicySet>();
-    init();
-    final canvasModel = Provider.of<CanvasMix>(context);
-    final canvasState = Provider.of<CanvasState>(context);
-
     return RepaintBoundary(
-      key: canvasGlobalKey,
+      //key: canvasGlobalKey,
       child: AbsorbPointer(
-        absorbing: canvasState.shouldAbsorbPointer,
+        absorbing: false, //policy.state.shouldAbsorbPointer,
         child: Listener(
-          onPointerSignal: (PointerSignalEvent event) =>
-              policy.onCanvasPointerSignal(event),
+          onPointerSignal: (d) => policy.onCanvasPointerSignal(d),
           child: GestureDetector(
-            child: ClipRect(
-              child: (withControlPolicy != null)
-                  ? canvasAnimated(canvasModel)
-                  : canvasStack(canvasModel),
+            child: Watch(
+              policy,
+              (ctx, ch) => ClipRect(
+                child: canvas(),
+              ),
             ),
-            onScaleStart: (details) => policy.onCanvasScaleStart(details),
-            onScaleUpdate: (details) => policy.onCanvasScaleUpdate(details),
-            onScaleEnd: (details) => policy.onCanvasScaleEnd(details),
+            onScaleStart: (d) => policy.onCanvasScaleStart(d),
+            onScaleUpdate: (d) => policy.onCanvasScaleUpdate(d),
+            onScaleEnd: (d) => policy.onCanvasScaleEnd(d),
             onTap: () => policy.onCanvasTap(),
-            onTapDown: (details) => policy.onCanvasTapDown(details),
-            onTapUp: (details) => policy.onCanvasTapUp(details),
+            onTapDown: (d) => policy.onCanvasTapDown(d),
+            onTapUp: (d) => policy.onCanvasTapUp(d),
             onTapCancel: () => policy.onCanvasTapCancel(),
             onLongPress: () => policy.onCanvasLongPress(),
-            onLongPressStart: (details) =>
-                policy.onCanvasLongPressStart(details),
-            onLongPressMoveUpdate: (details) =>
-                policy.onCanvasLongPressMoveUpdate(details),
-            onLongPressEnd: (details) => policy.onCanvasLongPressEnd(details),
+            onLongPressStart: (d) => policy.onCanvasLongPressStart(d),
+            onLongPressMoveUpdate: (d) => policy.onCanvasLongPressMoveUpdate(d),
+            onLongPressEnd: (d) => policy.onCanvasLongPressEnd(d),
             onLongPressUp: () => policy.onCanvasLongPressUp(),
           ),
         ),

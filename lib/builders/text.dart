@@ -9,7 +9,7 @@ import 'package:signed_fractal/models/index.dart';
 
 extension ComponentFractalExt on ComponentFractal {
   Widget build(BuildContext ctx) => switch (data) {
-        ScreenFractal f => Center(
+        NodeFractal f => Center(
             child: IconButton(
               icon: f.ctrl.icon.widget,
               onPressed: () {
@@ -18,7 +18,7 @@ extension ComponentFractalExt on ComponentFractal {
               },
             ),
           ),
-        PostFractal f => Text(f.content),
+        EventFractal f => Text(f.display),
         _ => Container(),
       };
 }

@@ -46,15 +46,16 @@ mixin CanvasControlPolicy on BasePolicySet {
 
   onCanvasScaleUpdate(ScaleUpdateDetails details) {
     if (!canUpdateCanvasModel) return;
-    if (this is ConstrainsPolicy && state.scale <= state.minScale) return;
+    //if (this is ConstrainsPolicy && state.scale <= state.minScale) return;
     _animationController?.repeat();
-    //_updateCanvasModelWithLastValues();
+    _updateCanvasModelWithLastValues();
 
     double previousScale = transformScale;
 
-    final pos = transformPosition + (details.focalPoint - _lastFocalPoint);
-    final nPos = _basePosition + pos;
-    transformPosition = pos;
+    //final pos = transformPosition + (details.focalPoint - _lastFocalPoint);
+    //final nPos = _basePosition + pos;
+    //transformPosition = pos;
+    transformPosition += details.focalPoint - _lastFocalPoint;
     transformScale = keepScaleInBounds(details.scale, _baseScale);
 
     var focalPoint = (details.localFocalPoint - transformPosition);
@@ -77,7 +78,7 @@ mixin CanvasControlPolicy on BasePolicySet {
     transformPosition = Offset.zero;
     transformScale = 1.0;
 
-    //state.updateCanvas();
+    state.updateCanvas();
   }
 
   _updateCanvasModelWithLastValues() {

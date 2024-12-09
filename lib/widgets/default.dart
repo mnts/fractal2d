@@ -4,6 +4,7 @@ import 'package:fractals2d/mixins/canvas.dart';
 import 'package:signed_fractal/signed_fractal.dart';
 
 import '../policy/main/index.dart';
+import 'canvas.dart';
 import 'policy.dart';
 
 class DefaultCanvasArea extends StatefulWidget {
@@ -26,8 +27,8 @@ class _DefaultCanvasAreaState extends State<DefaultCanvasArea> {
   Widget build(BuildContext context) {
     return Watch(
       widget.fractal,
-      (ctx, child) => CanvasArea(
-        policy: policy,
+      (ctx, child) => DiagramEditorCanvas(
+        policy,
       ),
     );
   }

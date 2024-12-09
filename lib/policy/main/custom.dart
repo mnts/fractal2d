@@ -5,7 +5,7 @@ import '/diagram_editor.dart';
 import 'package:flutter/material.dart';
 
 mixin CustomStatePolicy implements PolicySet {
-  bool isGridVisible = true;
+  bool isGridVisible = false;
 
   List<String> bodies = [
     'text',

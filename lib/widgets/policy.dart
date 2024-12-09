@@ -7,6 +7,7 @@ import '../lib.dart';
 import '../policy/base/policy_set.dart';
 import '../policy/main/set.dart';
 
+/*
 class CanvasArea extends StatelessWidget {
   final MyPolicySet policy;
   const CanvasArea({required this.policy, super.key});
@@ -29,3 +30,5 @@ class CanvasArea extends StatelessWidget {
     );
   }
 }
+
+*/

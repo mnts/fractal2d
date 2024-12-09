@@ -230,8 +230,6 @@ extension CanvasModelWriter on CanvasMix {
 
   /// Removes all connections that the component with [componentId] has.
   removeComponentConnections(int componentId) {
-    assert(componentExists(componentId),
-        'model does not contain this component id: $componentId');
     removeComponentConnections(componentId);
   }
 
@@ -266,10 +264,6 @@ extension CanvasModelWriter on CanvasMix {
 
   /// Sets the component's to [size].
   setcomponentSizse(int componentId, SizeF size) {
-    assert(
-      componentExists(componentId),
-      'model does not contain this component id: $componentId',
-    );
     //getComponent(componentId).setSize(size);
   }
 
@@ -292,7 +286,6 @@ extension CanvasModelWriter on CanvasMix {
 
   /// Makes all link's joints invisible.
   hideLinkJoints(int linkId) {
-    assert(linkExists(linkId), 'model does not contain this link id: $linkId');
     getLink(linkId)?.hideJoints();
   }
 
@@ -353,8 +346,6 @@ extension CanvasModelWriter on CanvasMix {
   ///
   /// Joints are indexed from 1.
   moveLinkMiddlePoint(int linkId, OffsetF offset, int index) {
-    assert(linkExists(linkId), 'model does not contain this link id: $linkId');
-
     getLink(linkId)?.moveMiddlePoint(
       offset / cState.scale,
       index,
@@ -371,7 +362,6 @@ extension CanvasModelWriter on CanvasMix {
 
   /// Updates all link's joints position by [offset].
   moveAllLinkMiddlePoints(int linkId, OffsetF position) {
-    assert(linkExists(linkId), 'model does not contain this link id: $linkId');
     getLink(linkId)?.moveAllMiddlePoints(position / cState.scale);
   }
 }

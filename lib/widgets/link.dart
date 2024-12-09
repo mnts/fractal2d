@@ -9,14 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Link extends StatelessWidget {
-  const Link({
+  final LinkFractal link;
+  const Link(
+    this.link, {
     Key? key,
   });
 
   @override
   Widget build(context) {
-    final link = Provider.of<LinkFractal>(context);
-    final policy = Provider.of<PolicySet>(context);
+    final policy = context.read<PolicySet>();
 
     LinkPainter linkPainter = LinkPainter(
       linkPoints: (link.linkPoints.map(
@@ -78,7 +79,7 @@ class Link extends StatelessWidget {
                     ),
                   );
                 },
-              ).toList(),
+              ),
               ...policy.showWidgetsWithLinkData(context, link),
             ],
           ),

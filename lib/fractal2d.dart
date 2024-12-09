@@ -2,7 +2,7 @@ import 'package:app_fractal/index.dart';
 
 final NetworkFractal network = NetworkFractal.fromMap({
   'name': FileF.host,
-  'createdAt': 2,
+  'kind': 3,
   'pubkey': '',
 })
   ..synch()
