@@ -1,0 +1,27 @@
+/* Define the swinging animation */
+@keyframes swing {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Apply the animation to the favicon */
+body:not([flt-embedding]):before {
+    content: "";
+    display: block;
+    margin-left: -64px;
+    margin-top: -64px;
+    width: 128px; /* Adjust based on your favicon size */
+    height: 128px; /* Adjust based on your favicon size */
+    background-image: url('/favicon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: swing 1s ease-in-out infinite;
+}

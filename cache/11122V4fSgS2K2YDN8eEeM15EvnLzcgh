@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Error | Storj</title>
+
+  <meta property="og:url" content="https://link.storjshare.io" />
+  <meta property="og:title" content="Error | Storj" />
+  <meta property="og:description" name="description" content="Shared content - Storj" />
+  
+  <meta property="og:image" content="https://link.storjshare.io/static/img/file.png?v=260f2af" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@storj" />
+  <meta name="twitter:title" content="Error | Storj" />
+  <meta name="twitter:description" content="Shared content - Storj" />
+  
+  <meta name="twitter:image" content="https://link.storjshare.io/static/img/file.png?v=260f2af" />
+  
+
+  <link rel="shortcut icon"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAC40lEQVRIDe1US0iUURQ+V8fJmcnykTJmNA0tMszETUVlCrkoR+2lWdFDk7AHlNQiCGaREhlUli3ETSRFqx4UlAi5ySgqS8hQiXLMTKca35k6j3O6d5zE//rnuNCF4Mdd3HvO+c53/3P/cxgRwUwiYCaTi9xzAn4rPPtLpPH7jaMBSDA4DE43AIFWAwYdBLApUf0L/OyFJ2/oWT28/wKd3Tw/RIdB4nLYnAjpa5gxzI8Mm6TRRlxQ8ZSuPQSbjYEGjEaICBHpegagww7gBpOJTm6HY+lMp/2/DBdQRfcA7bmIkEIaC+Vexqq3ZLPTkJOGndT6g6rfUf5V1FqIB+wqRkefag5hBFXP7yHKvoCQRHEFPBeOxgz8oZeNYvHNKGrqMeE48bAdRdj/zyglVBFApLM3EZJpXSHyy3K4PXTjMZpzMTCN+DIfwrJH6HILV7uDks4gbKLTFejxCIsEFYG6T6jPoKjd9MHmu3vpA4RUCrLQViumWb2VSeVv4/M2tuHivaSz0KtGn2W8hopAQZm4vrVSRDd9o1PlqM8Ukvdqffz7L3B+JkXm4OtmX6riu4KSd2UKAl39ZDpIoVnU4cBWO8XmixIv2EZHrivIWd4X0mfguVs44qLObozIwZj9ZO8Zf3uxl0dFUxt0dMHaFRQdwSprqPkjZG+h56VQkqfoqxPpULiPQgys5A6rriNjGNuwEjq7gNMlyAL2XnANQpxJhCXHs3IrXDrMEswQ7u2AMXLKalZ6lJ0/QIhQVSfMnIKDYO8ZC/Ft5E52ugA8EKIX7uR4sSbBrz4xOYK9XWaYJ4iCroQsYAgGpoPbNVD/WRk44TTsotoGFqyDneuFz9EPEAScLkEWWBoF4aHQ8p21tEuRE47ElkVTUS5sXMU8KCaVIRQ4XYI8i1xuaG4nMTX9IZBBzCIWuVDE8d5s+Ar8N4hdwrRBCqYsoHBOx0H+i6YjpyLHnICiHGqHuRKpVUVhm/0l+gsfrGM3Nzju5wAAAABJRU5ErkJggg=="
+    type="image/x-icon">
+
+  <link rel="stylesheet" href="https://link.storjshare.io/static/css/bootstrap.min.css?v=260f2af">
+  <link async href="https://fonts.googleapis.com/css?family=Inter:300,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+
+  <link rel="stylesheet" href="https://link.storjshare.io/static/css/style.css?v=260f2af">
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+
+
+<div class="vh-80 w-100">
+  <div class="flex-column align-content-center justify-content-center">
+
+    <div class="col text-center text-md-center">
+      <a href="https://www.storj.io/"><img src="https://link.storjshare.io/static/img/logo.svg?v=260f2af" class="logo mt-4" alt="Storj Logo"></a>
+    </div>
+
+    <div class="d-flex flex-column text-center justify-content-center col-12 col-lg-12 my-4 error-container">
+      <h3 class="mb-3">Access denied.</h3>
+      <span><a href="/" class="btn btn-primary btn-lg mt-2 d-block d-md-inline-block homepage-btn">Go to homepage</a></span>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+    <div class="container-fluid">
+        <div class="d-flex col-12 px-lg-4 px-xl-5 align-items-center justify-content-between footer">
+            <div class="d-flex row align-items-center justify-content-start">
+                <p class="m-0 pt-4 pt-sm-2">Sign up for a 30 day trial today.</p>
+            </div>
+            <div class="row">
+                <a href="https://storj.io/signup" class="btn btn-primary btn-lg d-block d-md-inline-block">Sign Up</a>
+                <a href="https://www.storj.io/" class="btn btn-outline-primary btn-lg ml-3 px-4">Learn More</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
+
