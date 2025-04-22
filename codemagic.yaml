@@ -1,3 +1,4 @@
+workflows:
   ios-unsigned:
     name: iOS Unsigned Build
     environment:
